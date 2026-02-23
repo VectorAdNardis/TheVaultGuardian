@@ -409,6 +409,11 @@ html, body {
   color: var(--brand-accent);
 }
 
+.ctrl-credit {
+  text-decoration: none;
+  pointer-events: all;
+}
+
 /* ---- Tutorial Overlay ---- */
 #tutorial-overlay {
   position: fixed;

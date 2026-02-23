@@ -186,28 +186,6 @@
       });
     }
 
-    // High contrast toggle
-    var hcBtn = document.getElementById('btn-contrast');
-    if (hcBtn) {
-      hcBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        colorBlindMode = !colorBlindMode;
-        document.body.classList.toggle('high-contrast', colorBlindMode);
-        hcBtn.classList.toggle('active', colorBlindMode);
-      });
-    }
-
-    // Reduced motion toggle
-    var rmBtn = document.getElementById('btn-motion');
-    if (rmBtn) {
-      rmBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        reducedMotion = !reducedMotion;
-        document.body.classList.toggle('reduced-motion', reducedMotion);
-        rmBtn.classList.toggle('active', reducedMotion);
-      });
-    }
-
     // Attract screen click — start game
     var attractEl = document.getElementById('attract-screen');
     if (attractEl) {
