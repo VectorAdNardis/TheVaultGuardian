@@ -563,13 +563,7 @@
     // ---- PLAYING ----
     else if (state === G.State.STATES.PLAYING) {
       if (popupActive) {
-        // Game is paused for power-up popup — only tick popup timer
-        popupTimer -= dt;
-        G.Screens.updatePopupTimer(popupTimer, cfg.popupDurationSeconds || 3.5);
-        if (popupTimer <= 0) {
-          _dismissPopup();
-        }
-        // Still render the frozen game state behind the popup
+        // Game is paused for power-up popup — wait for user click to continue
         renderPlaying();
       } else {
         updatePlaying(dt);
@@ -639,7 +633,15 @@
 
     // Fire
     fireCooldown -= dt;
-    if (G.Input.consumeFire() && fireCooldown <= 0) {
+    var weapon = getActiveWeapon();
+    if (weapon === 'STRONG_PASSWORD') {
+      // Continuous auto-fire stream while Strong Password is active
+      G.Input.consumeFire(); // consume any pending fire to prevent double-shot
+      if (fireCooldown <= 0) {
+        fireWeapon(G.Input.getAimAngle());
+        fireCooldown = 0.06; // very fast stream (~16 shots/sec)
+      }
+    } else if (G.Input.consumeFire() && fireCooldown <= 0) {
       fireWeapon(G.Input.getAimAngle());
       fireCooldown = cfg.fireRate;
     }

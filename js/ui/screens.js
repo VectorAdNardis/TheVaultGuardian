@@ -22,7 +22,6 @@
     els.popupLabel = document.getElementById('popup-label');
     els.popupDesc = document.getElementById('popup-desc');
     els.popupIcon = document.getElementById('popup-icon');
-    els.popupBar = document.getElementById('popup-timer-bar');
     els.popupBadge = document.getElementById('popup-badge');
   }
 
@@ -147,8 +146,7 @@
     // Set content
     if (els.popupLabel) els.popupLabel.textContent = data.label;
     if (els.popupDesc) els.popupDesc.textContent = data.description;
-    if (els.popupBadge) els.popupBadge.textContent = 'ACTIVATED';
-    if (els.popupBar) els.popupBar.style.width = '100%';
+    if (els.popupBadge) els.popupBadge.textContent = 'COLLECTED';
 
     // Set accent color
     if (els.popupIcon) {
@@ -177,13 +175,6 @@
     els.popup.classList.remove('visible');
   }
 
-  function updatePopupTimer(remaining, total) {
-    if (els.popupBar && total > 0) {
-      var pct = Math.max(0, (remaining / total) * 100);
-      els.popupBar.style.width = pct + '%';
-    }
-  }
-
   G.Screens = {
     init: init,
     showAttract: showAttract,
@@ -194,7 +185,6 @@
     promptInitials: promptInitials,
     hideInitials: hideInitials,
     showPowerupPopup: showPowerupPopup,
-    hidePowerupPopup: hidePowerupPopup,
-    updatePopupTimer: updatePopupTimer
+    hidePowerupPopup: hidePowerupPopup
   };
 })();

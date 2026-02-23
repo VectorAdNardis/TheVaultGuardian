@@ -698,29 +698,29 @@ html, body {
   opacity: 0.9;
 }
 
-.popup-timer-track {
-  height: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.popup-timer-bar {
-  height: 100%;
-  background: var(--popup-accent);
-  border-radius: 2px;
-  transition: width 0.1s linear;
-  width: 100%;
-}
-
-.popup-dismiss {
+.popup-continue {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--hud-dim);
+  font-size: 14px;
+  color: #000;
+  background: var(--popup-accent);
   text-transform: uppercase;
-  letter-spacing: 2px;
-  animation: pulse-cta 2s ease-in-out infinite;
+  letter-spacing: 3px;
+  font-weight: bold;
+  padding: 10px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.popup-continue:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--popup-accent);
+}
+
+.popup-continue:active {
+  transform: scale(0.95);
 }
 
 /* ---- Initials Entry ---- */
