@@ -537,6 +537,17 @@ html, body {
   display: none;
 }
 
+#summary-screen.flash-only .summary-outcome,
+#summary-screen.flash-only .summary-score,
+#summary-screen.flash-only .summary-rank,
+#summary-screen.flash-only .summary-stats,
+#summary-screen.flash-only .summary-kills,
+#summary-screen.flash-only .summary-callout,
+#summary-screen.flash-only .summary-restart,
+#summary-screen.flash-only .summary-auto-reset {
+  display: none;
+}
+
 #summary-screen .summary-heading {
   font-family: var(--font-mono);
   font-size: clamp(22px, 3vw, 44px);
@@ -850,6 +861,7 @@ html, body {
   justify-content: center;
   align-items: center;
   background: rgba(6, 10, 18, 0.92);
+  transition: opacity 0.4s ease;
 }
 
 #leaderboard-panel.hidden {
@@ -1029,6 +1041,74 @@ html, body {
 .lb-play-again:hover {
   background: #FF2D50;
   box-shadow: 0 0 16px var(--brand-glow);
+}
+
+/* ---- Inline initials entry in leaderboard ---- */
+.lb-initials-entry {
+  text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hud-border);
+}
+
+.lb-initials-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--brand-accent);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.lb-initials-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.lb-initials-input {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  text-align: center;
+  width: 140px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid var(--brand-accent);
+  color: #FFFFFF;
+  letter-spacing: 12px;
+  text-transform: uppercase;
+  outline: none;
+  caret-color: var(--brand-accent);
+  pointer-events: all;
+}
+
+.lb-initials-submit {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #FFFFFF;
+  background: var(--brand-accent);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  pointer-events: all;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.lb-initials-submit:hover {
+  background: #FF2D50;
+  box-shadow: 0 0 16px var(--brand-glow);
+}
+
+.lb-initials-countdown {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--hud-dim);
+  margin-top: 8px;
 }
 
 /* ---- Reduced motion ---- */

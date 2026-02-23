@@ -64,16 +64,27 @@
   var currentTab = 'today';
   var killData = null;
   var restartCallback = null;
+  var pendingOptions = null;
+  var initialsTimer = null;
+  var initialsCountdown = 0;
 
   function init() {
     panelEl = document.getElementById('leaderboard-panel');
   }
 
-  function show(highlightScore, extraData) {
+  function show(highlightScore, extraData, options) {
     if (!panelEl) return;
-    panelEl.classList.remove('hidden');
     currentTab = 'today';
     killData = extraData || null;
+    pendingOptions = options || null;
+
+    // Fade in
+    panelEl.style.opacity = '0';
+    panelEl.classList.remove('hidden');
+    requestAnimationFrame(function () {
+      panelEl.style.opacity = '1';
+    });
+
     _render(highlightScore);
   }
 
@@ -84,12 +95,36 @@
   function hide() {
     if (!panelEl) return;
     panelEl.classList.add('hidden');
+    panelEl.style.opacity = '';
+    if (initialsTimer) {
+      clearInterval(initialsTimer);
+      initialsTimer = null;
+    }
+    pendingOptions = null;
+  }
+
+  function reRender(highlightScore) {
+    _render(highlightScore);
   }
 
   function _render(highlightScore) {
     var entries = currentTab === 'today' ? getToday() : getAll();
 
     var html = '<div class="lb-container">';
+
+    // Inline initials entry (if pending)
+    if (pendingOptions && pendingOptions.pendingEntry) {
+      var timeout = pendingOptions.initialsTimeout || 5;
+      html += '<div class="lb-initials-entry">';
+      html += '<label class="lb-initials-label">Enter Your Initials</label>';
+      html += '<div class="lb-initials-row">';
+      html += '<input type="text" class="lb-initials-input" id="lb-initials-input" maxlength="3" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="___">';
+      html += '<button class="lb-initials-submit" data-action="submit-initials">Save</button>';
+      html += '</div>';
+      html += '<div class="lb-initials-countdown" id="lb-initials-countdown">Auto-saving as GST in ' + timeout + 's</div>';
+      html += '</div>';
+    }
+
     html += '<h3>Leaderboard</h3>';
     html += '<div class="lb-tabs">';
     html += '<button class="lb-tab' + (currentTab === 'today' ? ' active' : '') + '" data-tab="today">Today</button>';
@@ -111,6 +146,7 @@
       }
       html += '</ul>';
     }
+
     // Kill breakdown section
     if (killData && killData.killsByType && killData.enemyCfg) {
       html += '<div class="lb-kills-section">';
@@ -137,6 +173,50 @@
 
     panelEl.innerHTML = html;
 
+    // Wire initials input if pending
+    if (pendingOptions && pendingOptions.pendingEntry) {
+      var lbInput = document.getElementById('lb-initials-input');
+      if (lbInput) {
+        lbInput.focus();
+
+        initialsCountdown = pendingOptions.initialsTimeout || 5;
+        if (initialsTimer) clearInterval(initialsTimer);
+        initialsTimer = setInterval(function () {
+          initialsCountdown--;
+          var cdEl = document.getElementById('lb-initials-countdown');
+          if (cdEl) {
+            cdEl.textContent = 'Auto-saving as GST in ' + initialsCountdown + 's';
+          }
+          if (initialsCountdown <= 0) {
+            _submitLeaderboardInitials(highlightScore);
+          }
+        }, 1000);
+
+        lbInput.onkeydown = function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            _submitLeaderboardInitials(highlightScore);
+          }
+          if (e.key.length === 1 && lbInput.value.length >= 3) {
+            e.preventDefault();
+          }
+        };
+
+        var submitBtn = panelEl.querySelector('[data-action="submit-initials"]');
+        if (submitBtn) {
+          submitBtn.addEventListener('click', function (ev) {
+            ev.stopPropagation();
+            _submitLeaderboardInitials(highlightScore);
+          });
+          submitBtn.addEventListener('touchstart', function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            _submitLeaderboardInitials(highlightScore);
+          });
+        }
+      }
+    }
+
     // Play Again button
     var restartBtn = panelEl.querySelector('[data-action="restart"]');
     if (restartBtn) {
@@ -159,6 +239,26 @@
         _render(highlightScore);
       });
     }
+  }
+
+  function _submitLeaderboardInitials(highlightScore) {
+    if (initialsTimer) {
+      clearInterval(initialsTimer);
+      initialsTimer = null;
+    }
+
+    var lbInput = document.getElementById('lb-initials-input');
+    var val = 'GST';
+    if (lbInput) {
+      val = lbInput.value.trim().toUpperCase() || 'GST';
+      if (val.length > 3) val = val.substring(0, 3);
+      lbInput.onkeydown = null;
+    }
+
+    if (pendingOptions && pendingOptions.onInitialsSubmit) {
+      pendingOptions.onInitialsSubmit(val);
+    }
+    pendingOptions = null;
   }
 
   function _findFirstIndex(entries, score) {
@@ -208,6 +308,7 @@
     show: show,
     hide: hide,
     onRestart: onRestart,
+    reRender: reRender,
     addEntry: addEntry,
     getAll: getAll,
     getToday: getToday,

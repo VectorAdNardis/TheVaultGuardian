@@ -39,7 +39,7 @@
   var popupData = null;   // { type, label, chipColor, description }
 
   // Settings
-  var audioEnabled = false;
+  var audioEnabled = true;
   var colorBlindMode = false;
   var reducedMotion = false;
 
@@ -95,7 +95,7 @@
         { name: 'Full Breach', duration: 30, spawnInterval: 1.0, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING', 'INSIDER_ANOMALY'], speedMultiplier: 1.1 }
       ],
       pickupSpawnInterval: 10, pickupSpawnVariance: 3, maxActivePowerups: 2,
-      colorBlindMode: false, reducedMotion: false, audioEnabled: false,
+      colorBlindMode: false, reducedMotion: false, audioEnabled: true,
       brandColors: { red: '#D32F2F', dark: '#0A0E17', accent: '#FF1744', bg: '#060A12' },
       rankThresholds: [
         { min: 0, rank: 'Novice' }, { min: 50, rank: 'Analyst' },
@@ -316,30 +316,27 @@
       console.log('[DEMO] Game ended. Survived:', survived, 'Score:', score, 'Rank:', rank);
     }
 
-    // Prompt initials then show summary + leaderboard
-    G.Screens.promptInitials(cfg.initialsTimeoutSeconds, function (initials) {
-      G.Leaderboard.addEntry(initials, score, rank);
+    // Brief outcome flash, then leaderboard with embedded initials
+    G.Screens.showOutcomeFlash(survived);
 
-      G.Screens.showSummary({
-        score: score,
-        rank: rank,
-        integrity: vault.integrity,
-        maxIntegrity: vault.maxIntegrity,
-        kills: G.Scoring.getKills(),
-        killsByType: G.Scoring.getKillsByType(),
-        enemyCfg: cfg.enemies,
-        timeLeft: timeLeft,
-        timeBonus: timeBonus,
-        survived: survived
-      });
+    setTimeout(function () {
+      if (!G.State.is(G.State.STATES.SUMMARY)) return;
+      G.Screens.hideOutcomeFlash();
 
       G.Leaderboard.show(score, {
         killsByType: G.Scoring.getKillsByType(),
         enemyCfg: cfg.enemies,
         survived: survived
+      }, {
+        pendingEntry: true,
+        initialsTimeout: cfg.initialsTimeoutSeconds,
+        onInitialsSubmit: function (initials) {
+          G.Leaderboard.addEntry(initials, score, rank);
+          G.Leaderboard.reRender(score);
+        }
       });
       summaryIdleTimer = 0;
-    });
+    }, 1200);
   }
 
   function toAttract() {

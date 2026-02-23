@@ -44,7 +44,7 @@
   "maxActivePowerups": 2,
   "colorBlindMode": false,
   "reducedMotion": false,
-  "audioEnabled": false,
+  "audioEnabled": true,
   "popupDurationSeconds": 6,
   "maxInventorySlots": 5,
   "brandColors": {

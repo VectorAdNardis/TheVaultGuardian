@@ -199,6 +199,20 @@
     els.popup.classList.remove('visible');
   }
 
+  /* ---- Outcome Flash (brief heading-only display) ---- */
+  function showOutcomeFlash(survived) {
+    var heading = els.summary.querySelector('.summary-heading');
+    heading.textContent = survived ? 'Vault Defended!' : 'Vault Compromised';
+    heading.className = 'summary-heading ' + (survived ? 'win' : 'lose');
+    els.summary.classList.remove('hidden');
+    els.summary.classList.add('flash-only');
+  }
+
+  function hideOutcomeFlash() {
+    els.summary.classList.add('hidden');
+    els.summary.classList.remove('flash-only');
+  }
+
   G.Screens = {
     init: init,
     showAttract: showAttract,
@@ -209,6 +223,8 @@
     promptInitials: promptInitials,
     hideInitials: hideInitials,
     showPowerupPopup: showPowerupPopup,
-    hidePowerupPopup: hidePowerupPopup
+    hidePowerupPopup: hidePowerupPopup,
+    showOutcomeFlash: showOutcomeFlash,
+    hideOutcomeFlash: hideOutcomeFlash
   };
 })();
