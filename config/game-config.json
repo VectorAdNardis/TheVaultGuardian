@@ -1,0 +1,198 @@
+{
+  "durationSeconds": 90,
+  "vaultRadius": 40,
+  "vaultIntegrity": 100,
+  "waves": [
+    {
+      "name": "Recon",
+      "duration": 18,
+      "spawnInterval": 2.8,
+      "enemies": ["WEAK_PASSWORD"],
+      "speedMultiplier": 0.65
+    },
+    {
+      "name": "Infiltration",
+      "duration": 18,
+      "spawnInterval": 2.0,
+      "enemies": ["WEAK_PASSWORD", "SHADOW_IT_APP"],
+      "speedMultiplier": 0.8
+    },
+    {
+      "name": "Escalation",
+      "duration": 18,
+      "spawnInterval": 1.4,
+      "enemies": ["SHADOW_IT_APP", "SHADOW_AI_BOT", "WEAK_PASSWORD"],
+      "speedMultiplier": 1.0
+    },
+    {
+      "name": "Assault",
+      "duration": 18,
+      "spawnInterval": 0.9,
+      "enemies": ["SHADOW_IT_APP", "SHADOW_AI_BOT", "WEAK_PASSWORD", "PHISHING"],
+      "speedMultiplier": 1.2
+    },
+    {
+      "name": "Full Breach",
+      "duration": 18,
+      "spawnInterval": 0.55,
+      "enemies": ["SHADOW_IT_APP", "SHADOW_AI_BOT", "WEAK_PASSWORD", "PHISHING", "INSIDER_ANOMALY"],
+      "speedMultiplier": 1.5
+    }
+  ],
+  "pickupSpawnInterval": 10,
+  "pickupSpawnVariance": 3,
+  "maxActivePowerups": 2,
+  "colorBlindMode": false,
+  "reducedMotion": false,
+  "audioEnabled": false,
+  "popupDurationSeconds": 6,
+  "maxInventorySlots": 5,
+  "brandColors": {
+    "red": "#D32F2F",
+    "dark": "#0A0E17",
+    "accent": "#FF1744",
+    "bg": "#060A12"
+  },
+  "highContrastColors": {
+    "SHADOW_IT_APP": "#FFD700",
+    "SHADOW_AI_BOT": "#FF00FF",
+    "WEAK_PASSWORD": "#FF4444",
+    "PHISHING": "#00BFFF",
+    "INSIDER_ANOMALY": "#00FF7F"
+  },
+  "rankThresholds": [
+    { "min": 0, "rank": "Novice" },
+    { "min": 150, "rank": "Analyst" },
+    { "min": 300, "rank": "Guardian" },
+    { "min": 450, "rank": "Sentinel" },
+    { "min": 650, "rank": "Zero-Knowledge Master" }
+  ],
+  "enemies": {
+    "SHADOW_IT_APP": {
+      "color": "#F39C12",
+      "speedMin": 1.0,
+      "speedMax": 1.6,
+      "damage": 6,
+      "hp": 2,
+      "radius": 18,
+      "shape": "invader",
+      "label": "Phishing",
+      "category": "Phishing Attacks",
+      "points": 10
+    },
+    "SHADOW_AI_BOT": {
+      "color": "#9B59B6",
+      "speedMin": 1.1,
+      "speedMax": 1.7,
+      "damage": 7,
+      "hp": 2,
+      "radius": 16,
+      "shape": "invader",
+      "label": "Rogue AI",
+      "category": "Rogue AI Bots",
+      "points": 10
+    },
+    "WEAK_PASSWORD": {
+      "color": "#E74C3C",
+      "speedMin": 0.9,
+      "speedMax": 1.3,
+      "damage": 8,
+      "hp": 1,
+      "radius": 14,
+      "shape": "invader",
+      "label": "Bad PW",
+      "category": "Bad Passwords",
+      "points": 10
+    },
+    "PHISHING": {
+      "color": "#3498DB",
+      "speedMin": 1.4,
+      "speedMax": 2.0,
+      "damage": 5,
+      "hp": 1,
+      "radius": 10,
+      "shape": "invader",
+      "label": "Hacker",
+      "category": "Hackers",
+      "points": 10
+    },
+    "INSIDER_ANOMALY": {
+      "color": "#2ECC71",
+      "speedMin": 1.0,
+      "speedMax": 1.4,
+      "damage": 10,
+      "hp": 3,
+      "radius": 22,
+      "shape": "invader",
+      "label": "Insider",
+      "category": "Insider Threats",
+      "points": 10
+    }
+  },
+  "powerups": {
+    "STRONG_PASSWORD": {
+      "icon": "SP",
+      "durationSeconds": 10,
+      "rarity": 0.3,
+      "label": "Strong Password",
+      "chipColor": "#FF6B6B",
+      "type": "weapon",
+      "priority": 1,
+      "description": "Strong, unique passwords are your first line of defense. LastPass generates and stores complex passwords so you never have to remember them."
+    },
+    "MFA": {
+      "icon": "MF",
+      "durationSeconds": 8,
+      "rarity": 0.2,
+      "label": "Multi-Factor Auth",
+      "chipColor": "#4ECDC4",
+      "type": "weapon",
+      "priority": 4,
+      "description": "MFA blocks 99.9% of automated attacks. Even if a password is stolen, multi-factor authentication stops unauthorized access cold."
+    },
+    "SSO": {
+      "icon": "SS",
+      "durationSeconds": 8,
+      "rarity": 0.2,
+      "label": "Single Sign-On",
+      "chipColor": "#45B7D1",
+      "type": "weapon",
+      "priority": 2,
+      "description": "One secure login for all your apps. Single Sign-On eliminates password fatigue and reduces attack surfaces across your organization."
+    },
+    "PASSWORD_MANAGER": {
+      "icon": "PM",
+      "durationSeconds": 7,
+      "rarity": 0.15,
+      "label": "Password Manager",
+      "chipColor": "#96CEB4",
+      "type": "weapon",
+      "priority": 3,
+      "description": "Password reuse is the #1 cause of breaches. A password manager secures every credential and eliminates the risk automatically."
+    },
+    "IT_ADMIN_DASHBOARD": {
+      "icon": "IT",
+      "durationSeconds": 10,
+      "rarity": 0.15,
+      "label": "IT Admin Dashboard",
+      "chipColor": "#FFEAA7",
+      "type": "tool",
+      "priority": 0,
+      "description": "See everything. The Admin Dashboard reveals Shadow IT, enforces security policies, and monitors threats across your organization in real-time."
+    }
+  },
+  "baseEnemySpeed": 80,
+  "projectileSpeed": 1000,
+  "projectileDamage": 1,
+  "fireRate": 0.15,
+  "idleTimeoutSeconds": 20,
+  "attractResetSeconds": 15,
+  "leaderboardSize": 10,
+  "initialsTimeoutSeconds": 5,
+  "demo": {
+    "waveDuration": 5,
+    "spawnIntervalMultiplier": 0.6,
+    "pickupSpawnInterval": 3,
+    "speedMultiplier": 0.8
+  }
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>The Vault Guardian — Shadow Attack Simulator</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Critical inline styles to prevent FOUC */
+    body { background: #060A12; }
+    #game-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- Game Canvas -->
+  <canvas id="game-canvas"></canvas>
+
+  <!-- HUD Overlay (visible during gameplay) -->
+  <div id="hud">
+    <!-- Top Bar -->
+    <div id="hud-top">
+      <div class="hud-box" id="hud-wave">WAVE 1/5</div>
+      <div class="hud-box" id="hud-timer">01:15</div>
+      <div class="hud-box" id="hud-integrity-wrap">
+        <span style="font-size:12px;opacity:0.6;letter-spacing:1px;">VAULT</span>
+        <div id="hud-integrity-bar">
+          <div id="hud-integrity-fill"></div>
+        </div>
+        <span id="hud-integrity-label">100</span>
+      </div>
+    </div>
+
+    <!-- Right Panel: Score + Kill Tracker -->
+    <div id="hud-right">
+      <div id="hud-score">0</div>
+      <div id="hud-kill-tracker"></div>
+    </div>
+
+    <!-- Bottom-Left: Inventory + Active Power-ups -->
+    <div id="hud-bottom-left">
+      <div id="hud-inventory"></div>
+      <div id="hud-active-powerups"></div>
+    </div>
+
+    <!-- Bottom-Right: Controls -->
+    <div id="hud-controls">
+      <button class="ctrl-btn" id="btn-mute">Sound: Off</button>
+      <button class="ctrl-btn" id="btn-contrast">Hi-Contrast</button>
+      <button class="ctrl-btn" id="btn-motion">Reduce Motion</button>
+    </div>
+  </div>
+
+  <!-- Tutorial Overlay -->
+  <div id="tutorial-overlay">
+    <div id="tutorial-box">
+      <h3>Defend the Vault</h3>
+      <ul>
+        <li>Aim with mouse or arrow keys</li>
+        <li>Shoot with click or spacebar</li>
+        <li>Shoot power-ups to collect weapons</li>
+        <li>Press 1-5 or click to activate</li>
+        <li>Survive the waves!</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Attract Screen -->
+  <div id="attract-screen">
+    <div class="attract-title">The Vault Guardian</div>
+    <div class="attract-subtitle">Shadow Attack Simulator</div>
+    <div class="attract-cta">Tap to Start</div>
+  </div>
+
+  <!-- Summary / End Screen -->
+  <div id="summary-screen" class="hidden">
+    <div class="summary-heading win">Vault Defended!</div>
+    <div class="summary-score">0</div>
+    <div class="summary-rank">Novice</div>
+    <div class="summary-stats"></div>
+    <div class="summary-callout">
+      Shadow IT and Shadow AI are real threats.<br>
+      <strong>LastPass Business Max</strong> provides SSO, MFA, password management,
+      and IT admin dashboards to defend your organization's vault.<br>
+      Talk to us to learn more.
+    </div>
+    <div class="summary-restart">Tap to Play Again</div>
+    <div class="summary-auto-reset">Auto-reset in 15s</div>
+  </div>
+
+  <!-- Initials Entry Overlay -->
+  <div id="initials-overlay" class="hidden">
+    <div class="initials-box">
+      <h3>Enter Your Initials</h3>
+      <input type="text" id="initials-input" maxlength="3" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+      <div class="initials-hint">3 letters, then press Enter</div>
+      <div class="initials-countdown" id="initials-countdown"></div>
+    </div>
+  </div>
+
+  <!-- Power-up Educational Popup -->
+  <div id="powerup-popup" class="hidden">
+    <div class="popup-card">
+      <div class="popup-badge" id="popup-badge">ACTIVATED</div>
+      <div class="popup-icon" id="popup-icon"></div>
+      <h3 class="popup-label" id="popup-label">Power-Up Name</h3>
+      <p class="popup-desc" id="popup-desc">Description text here.</p>
+      <div class="popup-timer-track">
+        <div class="popup-timer-bar" id="popup-timer-bar"></div>
+      </div>
+      <div class="popup-dismiss">Tap anywhere to continue</div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Panel -->
+  <div id="leaderboard-panel" class="hidden"></div>
+
+  <!-- Hidden clear control for booth staff (3s long-press) -->
+  <div id="lb-clear-zone"></div>
+
+  <!-- Scripts (loaded in dependency order, no modules) -->
+  <script src="js/game/state.js"></script>
+  <script src="js/game/entities.js"></script>
+  <script src="js/game/scoring.js"></script>
+  <script src="js/game/collisions.js"></script>
+  <script src="js/game/spawner.js"></script>
+  <script src="js/engine/renderer.js"></script>
+  <script src="js/engine/input.js"></script>
+  <script src="js/ui/hud.js"></script>
+  <script src="js/ui/leaderboard.js"></script>
+  <script src="js/ui/screens.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>
