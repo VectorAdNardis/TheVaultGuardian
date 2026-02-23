@@ -98,16 +98,16 @@
       colorBlindMode: false, reducedMotion: false, audioEnabled: false,
       brandColors: { red: '#D32F2F', dark: '#0A0E17', accent: '#FF1744', bg: '#060A12' },
       rankThresholds: [
-        { min: 0, rank: 'Novice' }, { min: 150, rank: 'Analyst' },
-        { min: 300, rank: 'Guardian' }, { min: 450, rank: 'Sentinel' },
-        { min: 650, rank: 'Zero-Knowledge Master' }
+        { min: 0, rank: 'Novice' }, { min: 50, rank: 'Analyst' },
+        { min: 100, rank: 'Guardian' }, { min: 150, rank: 'Sentinel' },
+        { min: 220, rank: 'Zero-Knowledge Master' }
       ],
       enemies: {
-        SHADOW_IT_APP: { color: '#F39C12', speedMin: 1.0, speedMax: 1.6, damage: 6, hp: 2, radius: 18, shape: 'invader', label: 'Phishing', category: 'Phishing Attacks', points: 10 },
-        SHADOW_AI_BOT: { color: '#9B59B6', speedMin: 1.1, speedMax: 1.7, damage: 7, hp: 2, radius: 16, shape: 'invader', label: 'Rogue AI', category: 'Rogue AI Bots', points: 10 },
-        WEAK_PASSWORD: { color: '#E74C3C', speedMin: 0.9, speedMax: 1.3, damage: 8, hp: 1, radius: 14, shape: 'invader', label: 'Bad PW', category: 'Bad Passwords', points: 10 },
-        PHISHING: { color: '#3498DB', speedMin: 1.4, speedMax: 2.0, damage: 5, hp: 1, radius: 10, shape: 'invader', label: 'Hacker', category: 'Hackers', points: 10 },
-        INSIDER_ANOMALY: { color: '#2ECC71', speedMin: 1.0, speedMax: 1.4, damage: 10, hp: 3, radius: 22, shape: 'invader', label: 'Insider', category: 'Insider Threats', points: 10 }
+        WEAK_PASSWORD: { color: '#E74C3C', speedMin: 1.8, speedMax: 2.4, damage: 6, hp: 1, radius: 14, shape: 'invader', label: 'Bad Password', category: 'Bad Passwords' },
+        SHADOW_IT_APP: { color: '#F39C12', speedMin: 1.6, speedMax: 2.2, damage: 9, hp: 2, radius: 16, shape: 'invader', label: 'Phishing', category: 'Phishing Attacks' },
+        SHADOW_AI_BOT: { color: '#9B59B6', speedMin: 1.2, speedMax: 1.6, damage: 8, hp: 3, radius: 18, shape: 'invader', label: 'Shadow IT', category: 'Shadow IT Apps' },
+        PHISHING: { color: '#3498DB', speedMin: 0.9, speedMax: 1.3, damage: 12, hp: 4, radius: 20, shape: 'invader', label: 'Third Party', category: 'Third Party Risks' },
+        INSIDER_ANOMALY: { color: '#2ECC71', speedMin: 0.6, speedMax: 1.0, damage: 15, hp: 5, radius: 22, shape: 'invader', label: 'Hacker', category: 'Hackers' }
       },
       powerups: {
         STRONG_PASSWORD: { icon: 'SP', durationSeconds: 10, rarity: 0.3, label: 'Strong Password', chipColor: '#FF6B6B', type: 'weapon', priority: 1, description: 'Strong, unique passwords are your first line of defense. LastPass generates and stores complex passwords so you never have to remember them.' },
@@ -794,7 +794,7 @@
 
       switch (evt.type) {
         case 'threat_killed':
-          var pts = G.Scoring.killThreat(evt.threat, evt.hasPowerup);
+          var pts = G.Scoring.killThreat(evt.threat, getActiveWeapon());
           effects.push(G.Entities.createExplosion(evt.threat.x, evt.threat.y, evt.threat.color, 10));
           effects.push(G.Entities.createFloatingText(evt.threat.x, evt.threat.y - 20, '+' + pts, '#FFFFFF'));
           playSound('kill');

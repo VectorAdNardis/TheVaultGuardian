@@ -8,28 +8,30 @@
 
   var score = 0;
   var killCount = 0;
-  var powerupKills = 0;
   var killsByType = {};    // { 'SHADOW_IT_APP': 3, 'PHISHING': 5, ... }
+
+  // Points awarded per kill based on active weapon
+  var WEAPON_POINTS = {
+    'DEFAULT': 1,
+    'STRONG_PASSWORD': 2,
+    'SSO': 3,
+    'MFA': 4,
+    'PASSWORD_MANAGER': 5
+  };
 
   function reset() {
     score = 0;
     killCount = 0;
-    powerupKills = 0;
     killsByType = {};
   }
 
   function getScore() { return score; }
   function getKills() { return killCount; }
-  function getPowerupKills() { return powerupKills; }
   function getKillsByType() { return killsByType; }
 
-  /* Award points for destroying a threat. */
-  function killThreat(threat, hasPowerupActive) {
-    var pts = threat.points || 10;
-    if (hasPowerupActive) {
-      pts += 5;
-      powerupKills++;
-    }
+  /* Award points for destroying a threat based on active weapon. */
+  function killThreat(threat, activeWeapon) {
+    var pts = WEAPON_POINTS[activeWeapon] || 1;
     score += pts;
     killCount++;
 
@@ -65,7 +67,6 @@
     reset: reset,
     getScore: getScore,
     getKills: getKills,
-    getPowerupKills: getPowerupKills,
     getKillsByType: getKillsByType,
     killThreat: killThreat,
     addTimeBonus: addTimeBonus,
