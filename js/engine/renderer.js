@@ -489,13 +489,20 @@
       ctx.restore();
     }
 
-    // Slowed indicator (dashed ring)
-    if (thr.slowed) {
-      ctx.strokeStyle = '#FFEAA7';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([3, 3]);
+    // Frozen indicator (ice blue overlay + ring)
+    if (thr.frozen) {
+      ctx.save();
+      ctx.globalAlpha = 0.35;
+      ctx.fillStyle = '#88DDFF';
       ctx.beginPath();
-      ctx.arc(x, y, r + 4, 0, Math.PI * 2);
+      ctx.arc(x, y, r + 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      ctx.strokeStyle = '#88DDFF';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(x, y, r + 5, 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
     }
@@ -742,8 +749,15 @@
   /* ---- IT Admin Dashboard overlay ---- */
   function drawAdminOverlay(time, alpha) {
     ctx.save();
+
+    // Ice blue screen tint
+    ctx.globalAlpha = alpha * 0.06;
+    ctx.fillStyle = '#88DDFF';
+    ctx.fillRect(0, 0, W, H);
+
+    // Frost grid
     ctx.globalAlpha = alpha * 0.08;
-    ctx.strokeStyle = '#FFEAA7';
+    ctx.strokeStyle = '#88DDFF';
     ctx.lineWidth = 0.5;
 
     var spacing = 40;
@@ -754,10 +768,11 @@
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
     }
 
-    var sweepY = (time * 80) % H;
-    ctx.globalAlpha = alpha * 0.15;
-    ctx.fillStyle = '#FFEAA7';
-    ctx.fillRect(0, sweepY - 2, W, 4);
+    // Frost sweep line
+    var sweepY = (time * 40) % H;
+    ctx.globalAlpha = alpha * 0.2;
+    ctx.fillStyle = '#88DDFF';
+    ctx.fillRect(0, sweepY - 3, W, 6);
 
     ctx.restore();
   }

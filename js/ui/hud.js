@@ -21,6 +21,24 @@
     els.inventory = document.getElementById('hud-inventory');
     els.activePowerups = document.getElementById('hud-active-powerups');
     els.killTracker = document.getElementById('hud-kill-tracker');
+
+    // Event delegation for weapon bar clicks (survives innerHTML rebuilds)
+    if (els.inventory) {
+      els.inventory.addEventListener('click', function (e) {
+        var slot = e.target.closest('.weapon-active');
+        if (slot && _onInventoryUse) {
+          _onInventoryUse(slot.getAttribute('data-weapon-type'));
+        }
+      });
+      els.inventory.addEventListener('touchstart', function (e) {
+        var slot = e.target.closest('.weapon-active');
+        if (slot && _onInventoryUse) {
+          e.preventDefault();
+          e.stopPropagation();
+          _onInventoryUse(slot.getAttribute('data-weapon-type'));
+        }
+      });
+    }
   }
 
   function show() {
@@ -106,29 +124,6 @@
       html += '</div>';
     }
     els.inventory.innerHTML = html;
-
-    // Bind click listeners on active slots
-    var slots = els.inventory.querySelectorAll('.weapon-active');
-    for (var s = 0; s < slots.length; s++) {
-      slots[s].addEventListener('click', _handleWeaponClick);
-      slots[s].addEventListener('touchstart', _handleWeaponTouch);
-    }
-  }
-
-  function _handleWeaponClick(e) {
-    var type = e.currentTarget.getAttribute('data-weapon-type');
-    if (_onInventoryUse && type) {
-      _onInventoryUse(type);
-    }
-  }
-
-  function _handleWeaponTouch(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    var type = e.currentTarget.getAttribute('data-weapon-type');
-    if (_onInventoryUse && type) {
-      _onInventoryUse(type);
-    }
   }
 
   function _iconForType(type) {

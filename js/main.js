@@ -82,17 +82,17 @@
   function _inlineDefaults() {
     // Minimal fallback if JSON can't be loaded
     return {
-      durationSeconds: 90,
+      durationSeconds: 150,
       vaultRadius: 40,
       vaultIntegrity: 100,
       popupDurationSeconds: 6,
       maxInventorySlots: 5,
       waves: [
-        { name: 'Recon', duration: 18, spawnInterval: 2.8, enemies: ['WEAK_PASSWORD'], speedMultiplier: 0.65 },
-        { name: 'Infiltration', duration: 18, spawnInterval: 2.0, enemies: ['WEAK_PASSWORD', 'SHADOW_IT_APP'], speedMultiplier: 0.8 },
-        { name: 'Escalation', duration: 18, spawnInterval: 1.4, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD'], speedMultiplier: 1.0 },
-        { name: 'Assault', duration: 18, spawnInterval: 0.9, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING'], speedMultiplier: 1.2 },
-        { name: 'Full Breach', duration: 18, spawnInterval: 0.55, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING', 'INSIDER_ANOMALY'], speedMultiplier: 1.5 }
+        { name: 'Recon', duration: 30, spawnInterval: 3.5, enemies: ['WEAK_PASSWORD'], speedMultiplier: 0.45 },
+        { name: 'Infiltration', duration: 30, spawnInterval: 2.8, enemies: ['WEAK_PASSWORD', 'SHADOW_IT_APP'], speedMultiplier: 0.55 },
+        { name: 'Escalation', duration: 30, spawnInterval: 2.2, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD'], speedMultiplier: 0.7 },
+        { name: 'Assault', duration: 30, spawnInterval: 1.6, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING'], speedMultiplier: 0.85 },
+        { name: 'Full Breach', duration: 30, spawnInterval: 1.0, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING', 'INSIDER_ANOMALY'], speedMultiplier: 1.1 }
       ],
       pickupSpawnInterval: 10, pickupSpawnVariance: 3, maxActivePowerups: 2,
       colorBlindMode: false, reducedMotion: false, audioEnabled: false,
@@ -114,9 +114,9 @@
         MFA: { icon: 'MF', durationSeconds: 8, rarity: 0.2, label: 'Multi-Factor Auth', chipColor: '#4ECDC4', type: 'weapon', priority: 4, description: 'MFA blocks 99.9% of automated attacks. Even if a password is stolen, multi-factor authentication stops unauthorized access cold.' },
         SSO: { icon: 'SS', durationSeconds: 8, rarity: 0.2, label: 'Single Sign-On', chipColor: '#45B7D1', type: 'weapon', priority: 2, description: 'One secure login for all your apps. Single Sign-On eliminates password fatigue and reduces attack surfaces across your organization.' },
         PASSWORD_MANAGER: { icon: 'PM', durationSeconds: 7, rarity: 0.15, label: 'Password Manager', chipColor: '#96CEB4', type: 'weapon', priority: 3, description: 'Password reuse is the #1 cause of breaches. A password manager secures every credential and eliminates the risk automatically.' },
-        IT_ADMIN_DASHBOARD: { icon: 'IT', durationSeconds: 10, rarity: 0.15, label: 'IT Admin Dashboard', chipColor: '#FFEAA7', type: 'tool', priority: 0, description: 'See everything. The Admin Dashboard reveals Shadow IT, enforces security policies, and monitors threats across your organization in real-time.' }
+        IT_ADMIN_DASHBOARD: { icon: 'IT', durationSeconds: 5, rarity: 0.15, label: 'IT Admin Dashboard', chipColor: '#FFEAA7', type: 'tool', priority: 0, description: 'Freeze all threats! The Admin Dashboard reveals Shadow IT, enforces security policies, and stops threats cold across your organization.' }
       },
-      baseEnemySpeed: 80, projectileSpeed: 1000, projectileDamage: 1,
+      baseEnemySpeed: 60, projectileSpeed: 1000, projectileDamage: 1,
       fireRate: 0.15, idleTimeoutSeconds: 20, attractResetSeconds: 15,
       leaderboardSize: 10, initialsTimeoutSeconds: 5,
       demo: { waveDuration: 5, spawnIntervalMultiplier: 0.6, pickupSpawnInterval: 3, speedMultiplier: 0.8 }
@@ -659,27 +659,28 @@
       if (isDemo) console.log('[DEMO] Wave', spawnResult.waveIndex + 1, 'started');
     }
 
-    // ---- IT Admin slow effect ----
+    // ---- IT Admin freeze effect ----
     var adminActive = hasAdminDashboard();
-    var slowFactor = adminActive ? 0.65 : 1.0;
 
     // ---- Update threats ----
     for (var t = threats.length - 1; t >= 0; t--) {
       var thr = threats[t];
       if (!thr.alive) { threats.splice(t, 1); continue; }
 
-      // Move toward vault
-      var dx = vault.x - thr.x;
-      var dy = vault.y - thr.y;
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist > 0) {
-        var moveSpeed = thr.speed * slowFactor * dt;
-        thr.x += (dx / dist) * moveSpeed;
-        thr.y += (dy / dist) * moveSpeed;
+      // Move toward vault (frozen if admin dashboard active)
+      if (!adminActive) {
+        var dx = vault.x - thr.x;
+        var dy = vault.y - thr.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 0) {
+          var moveSpeed = thr.speed * dt;
+          thr.x += (dx / dist) * moveSpeed;
+          thr.y += (dy / dist) * moveSpeed;
+        }
+        thr.angle += dt * 1.5;
       }
 
-      thr.slowed = adminActive;
-      thr.angle += dt * 1.5;
+      thr.frozen = adminActive;
       if (thr.hitFlash > 0) thr.hitFlash -= dt;
     }
 
