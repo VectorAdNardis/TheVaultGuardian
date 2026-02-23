@@ -13,6 +13,19 @@
 
   var G = window.Game = window.Game || {};
 
+  // Damage per hit based on weapon variant
+  var WEAPON_DAMAGE = {
+    'DEFAULT': 1,
+    'STRONG_PASSWORD': 2,
+    'SSO': 3,
+    'MFA': 4,
+    'PASSWORD_MANAGER': 5
+  };
+
+  function _dmg(variant) {
+    return WEAPON_DAMAGE[variant] || 1;
+  }
+
   /* Simple circle-circle overlap */
   function circlesOverlap(ax, ay, ar, bx, by, br) {
     var dx = ax - bx;
@@ -60,8 +73,8 @@
         if (!thr.alive) continue;
 
         if (circlesOverlap(proj.x, proj.y, proj.radius, thr.x, thr.y, thr.radius * scale)) {
-          // Hit!
-          thr.hp -= (cfg.projectileDamage || 1);
+          // Hit! Damage based on weapon variant
+          thr.hp -= _dmg(proj.variant);
           thr.hitFlash = 0.12;
           proj.alive = false;
 
@@ -121,7 +134,7 @@
         if (dist < thr2.radius * scale + laser.width) {
           // Laser damages once per ~0.15s (tracked via hitFlash cooldown)
           if (thr2.hitFlash <= 0) {
-            thr2.hp -= 1;
+            thr2.hp -= _dmg(laser.variant);
             thr2.hitFlash = 0.15;
             if (thr2.hp <= 0) {
               thr2.alive = false;
@@ -173,7 +186,7 @@
           var hitKey = 't' + t3;
           if (!ring.hitSet[hitKey]) {
             ring.hitSet[hitKey] = true;
-            thr3.hp -= ring.damage;
+            thr3.hp -= _dmg(ring.variant);
             thr3.hitFlash = 0.12;
             if (thr3.hp <= 0) {
               thr3.alive = false;

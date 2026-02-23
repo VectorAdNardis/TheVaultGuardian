@@ -62,16 +62,23 @@
   /* ---- UI Rendering ---- */
   var panelEl = null;
   var currentTab = 'today';
+  var killData = null;
+  var restartCallback = null;
 
   function init() {
     panelEl = document.getElementById('leaderboard-panel');
   }
 
-  function show(highlightScore) {
+  function show(highlightScore, extraData) {
     if (!panelEl) return;
     panelEl.classList.remove('hidden');
     currentTab = 'today';
+    killData = extraData || null;
     _render(highlightScore);
+  }
+
+  function onRestart(cb) {
+    restartCallback = cb;
   }
 
   function hide() {
@@ -104,9 +111,45 @@
       }
       html += '</ul>';
     }
+    // Kill breakdown section
+    if (killData && killData.killsByType && killData.enemyCfg) {
+      html += '<div class="lb-kills-section">';
+      var outcomeClass = killData.survived ? 'win' : 'lose';
+      html += '<h4 class="lb-kills-heading ' + outcomeClass + '">' + (killData.survived ? 'Vault Defended!' : 'Vault Compromised') + '</h4>';
+      html += '<div class="lb-kills-grid">';
+      var types = Object.keys(killData.enemyCfg);
+      for (var j = 0; j < types.length; j++) {
+        var key = types[j];
+        var def = killData.enemyCfg[key];
+        var count = killData.killsByType[key] || 0;
+        html += '<div class="lb-kill-row">';
+        html += '<span class="lb-kill-swatch" style="background:' + def.color + '"></span>';
+        html += '<span class="lb-kill-label">' + (def.category || def.label) + '</span>';
+        html += '<span class="lb-kill-count">' + count + '</span>';
+        html += '</div>';
+      }
+      html += '</div>';
+      html += '</div>';
+    }
+
+    html += '<button class="lb-play-again" data-action="restart">Play Again</button>';
     html += '</div>';
 
     panelEl.innerHTML = html;
+
+    // Play Again button
+    var restartBtn = panelEl.querySelector('[data-action="restart"]');
+    if (restartBtn) {
+      restartBtn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (restartCallback) restartCallback();
+      });
+      restartBtn.addEventListener('touchstart', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (restartCallback) restartCallback();
+      });
+    }
 
     // Tab click listeners
     var tabs = panelEl.querySelectorAll('.lb-tab');
@@ -164,6 +207,7 @@
     init: init,
     show: show,
     hide: hide,
+    onRestart: onRestart,
     addEntry: addEntry,
     getAll: getAll,
     getToday: getToday,

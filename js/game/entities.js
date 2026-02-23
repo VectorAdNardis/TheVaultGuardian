@@ -96,15 +96,15 @@
     };
   }
 
-  /* MFA laser: persistent line from vault, not a moving projectile */
-  function createLaser(angle, duration) {
+  /* Laser: persistent line from vault, not a moving projectile */
+  function createLaser(angle, duration, variant) {
     return {
       angle: angle,
       alive: true,
       age: 0,
       duration: duration || 2.5,
       width: 6,
-      variant: 'MFA'
+      variant: variant || 'SSO'
     };
   }
 

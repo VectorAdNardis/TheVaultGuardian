@@ -144,6 +144,12 @@
       G.HUD.onInventoryUse(_useInventoryItem);
       G.Leaderboard.init();
       G.Leaderboard.initClearControl();
+      G.Leaderboard.onRestart(function () {
+        if (G.State.is(G.State.STATES.SUMMARY)) {
+          toAttract();
+          startGame();
+        }
+      });
       G.Screens.init();
 
       // Wire controls
@@ -258,6 +264,14 @@
         if (keyNum >= 1 && keyNum <= 5 && POWERUP_ORDER[keyNum - 1]) {
           _useInventoryItem(POWERUP_ORDER[keyNum - 1]);
         }
+        // Debug shortcuts: W = instant win, L = instant loss
+        if (e.code === 'KeyW' && e.shiftKey) {
+          endGame(true);
+        }
+        if (e.code === 'KeyL' && e.shiftKey) {
+          vault.integrity = 0;
+          endGame(false);
+        }
       }
     });
   }
@@ -334,12 +348,18 @@
         integrity: vault.integrity,
         maxIntegrity: vault.maxIntegrity,
         kills: G.Scoring.getKills(),
+        killsByType: G.Scoring.getKillsByType(),
+        enemyCfg: cfg.enemies,
         timeLeft: timeLeft,
         timeBonus: timeBonus,
         survived: survived
       });
 
-      G.Leaderboard.show(score);
+      G.Leaderboard.show(score, {
+        killsByType: G.Scoring.getKillsByType(),
+        enemyCfg: cfg.enemies,
+        survived: survived
+      });
       summaryIdleTimer = 0;
     });
   }
@@ -513,7 +533,7 @@
 
       case 'SSO':
         // Persistent laser line
-        lasers.push(G.Entities.createLaser(aimAngle, 2.5));
+        lasers.push(G.Entities.createLaser(aimAngle, 2.5, 'SSO'));
         playSound('laser');
         break;
 
@@ -794,7 +814,7 @@
 
       switch (evt.type) {
         case 'threat_killed':
-          var pts = G.Scoring.killThreat(evt.threat, getActiveWeapon());
+          var pts = G.Scoring.killThreat(evt.threat);
           effects.push(G.Entities.createExplosion(evt.threat.x, evt.threat.y, evt.threat.color, 10));
           effects.push(G.Entities.createFloatingText(evt.threat.x, evt.threat.y - 20, '+' + pts, '#FFFFFF'));
           playSound('kill');

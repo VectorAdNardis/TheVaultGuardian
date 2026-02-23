@@ -565,13 +565,62 @@ html, body {
   margin-bottom: 24px;
 }
 
+.summary-outcome {
+  font-size: clamp(13px, 1.5vw, 18px);
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.summary-outcome.win {
+  color: #4ECDC4;
+}
+
+.summary-outcome.lose {
+  color: var(--brand-accent);
+}
+
 .summary-stats {
   display: flex;
   gap: 32px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   font-family: var(--font-mono);
   font-size: 14px;
   color: var(--hud-dim);
+}
+
+.summary-kills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-family: var(--font-mono);
+}
+
+.summary-kill-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-kill-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: inline-block;
+  box-shadow: 0 0 4px currentColor;
+}
+
+.summary-kill-label {
+  font-size: 13px;
+  color: var(--hud-dim);
+}
+
+.summary-kill-count {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--hud-text);
+  min-width: 20px;
 }
 
 .summary-callout {
@@ -894,6 +943,87 @@ html, body {
   color: var(--hud-dim);
   font-size: 13px;
   padding: 20px 0;
+}
+
+/* ---- Kill breakdown in leaderboard ---- */
+.lb-kills-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hud-border);
+}
+
+.lb-kills-heading {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 12px;
+  color: var(--hud-dim);
+}
+
+.lb-kills-heading.win {
+  color: #4ECDC4;
+}
+
+.lb-kills-heading.lose {
+  color: var(--brand-accent);
+}
+
+.lb-kills-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lb-kill-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.lb-kill-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 0 4px currentColor;
+}
+
+.lb-kill-label {
+  flex: 1;
+  color: var(--hud-dim);
+}
+
+.lb-kill-count {
+  color: #FFFFFF;
+  min-width: 30px;
+  text-align: right;
+}
+
+.lb-play-again {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #FFFFFF;
+  background: var(--brand-accent);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  pointer-events: all;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.lb-play-again:hover {
+  background: #FF2D50;
+  box-shadow: 0 0 16px var(--brand-glow);
 }
 
 /* ---- Reduced motion ---- */

@@ -51,28 +51,52 @@
     els.summary.classList.remove('hidden');
 
     var heading = els.summary.querySelector('.summary-heading');
+    var outcomeEl = els.summary.querySelector('.summary-outcome');
     var scoreEl = els.summary.querySelector('.summary-score');
     var rankEl = els.summary.querySelector('.summary-rank');
     var statsEl = els.summary.querySelector('.summary-stats');
+    var killsEl = els.summary.querySelector('.summary-kills');
     var autoEl = els.summary.querySelector('.summary-auto-reset');
 
     if (data.survived) {
       heading.textContent = 'Vault Defended!';
       heading.className = 'summary-heading win';
+      outcomeEl.textContent = 'You successfully protected the vault from all threats.';
+      outcomeEl.className = 'summary-outcome win';
     } else {
       heading.textContent = 'Vault Compromised';
       heading.className = 'summary-heading lose';
+      outcomeEl.textContent = 'The vault was breached. Threats overwhelmed your defenses.';
+      outcomeEl.className = 'summary-outcome lose';
     }
 
     scoreEl.textContent = data.score;
     rankEl.textContent = data.rank;
 
-    var statsHTML = '<span>Kills: ' + data.kills + '</span>';
+    var statsHTML = '<span>Total Kills: ' + data.kills + '</span>';
     statsHTML += '<span>Integrity: ' + Math.max(0, Math.ceil(data.integrity)) + '%</span>';
     if (data.survived) {
       statsHTML += '<span>Time Bonus: +' + data.timeBonus + '</span>';
     }
     statsEl.innerHTML = statsHTML;
+
+    // Kill breakdown by enemy type
+    var killsHTML = '';
+    if (data.killsByType && data.enemyCfg) {
+      var types = Object.keys(data.enemyCfg);
+      for (var i = 0; i < types.length; i++) {
+        var key = types[i];
+        var def = data.enemyCfg[key];
+        var count = data.killsByType[key] || 0;
+        killsHTML += '<div class="summary-kill-row">';
+        killsHTML += '<span class="summary-kill-swatch" style="background:' + def.color + '"></span>';
+        killsHTML += '<span class="summary-kill-label">' + (def.category || def.label) + '</span>';
+        killsHTML += '<span class="summary-kill-count">' + count + '</span>';
+        killsHTML += '</div>';
+      }
+    }
+    killsEl.innerHTML = killsHTML;
+
     autoEl.textContent = 'Auto-reset in 15s';
   }
 
