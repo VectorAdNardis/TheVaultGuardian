@@ -133,7 +133,7 @@
       "chipColor": "#FF6B6B",
       "type": "weapon",
       "priority": 1,
-      "description": "Strong, unique passwords are your first line of defense. LastPass generates and stores complex passwords so you never have to remember them."
+      "description": "Strong, unique passwords are your first line of defense. A password manager generates and stores complex passwords so you never have to remember them."
     },
     "MFA": {
       "icon": "MF",

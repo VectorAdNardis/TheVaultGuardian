@@ -110,7 +110,7 @@
         INSIDER_ANOMALY: { color: '#2ECC71', speedMin: 0.6, speedMax: 1.0, damage: 15, hp: 5, radius: 22, shape: 'invader', label: 'Hacker', category: 'Hackers' }
       },
       powerups: {
-        STRONG_PASSWORD: { icon: 'SP', durationSeconds: 10, rarity: 0.3, label: 'Strong Password', chipColor: '#FF6B6B', type: 'weapon', priority: 1, description: 'Strong, unique passwords are your first line of defense. LastPass generates and stores complex passwords so you never have to remember them.' },
+        STRONG_PASSWORD: { icon: 'SP', durationSeconds: 10, rarity: 0.3, label: 'Strong Password', chipColor: '#FF6B6B', type: 'weapon', priority: 1, description: 'Strong, unique passwords are your first line of defense. A password manager generates and stores complex passwords so you never have to remember them.' },
         MFA: { icon: 'MF', durationSeconds: 8, rarity: 0.2, label: 'Multi-Factor Auth', chipColor: '#4ECDC4', type: 'weapon', priority: 3, description: 'MFA blocks 99.9% of automated attacks. Even if a password is stolen, multi-factor authentication stops unauthorized access cold.' },
         SSO: { icon: 'SS', durationSeconds: 8, rarity: 0.2, label: 'Single Sign-On', chipColor: '#45B7D1', type: 'weapon', priority: 2, description: 'One secure login for all your apps. Single Sign-On eliminates password fatigue and reduces attack surfaces across your organization.' },
         PASSWORD_MANAGER: { icon: 'PM', durationSeconds: 7, rarity: 0.15, label: 'Password Manager', chipColor: '#96CEB4', type: 'weapon', priority: 4, description: 'Password reuse is the #1 cause of breaches. A password manager secures every credential and eliminates the risk automatically.' },

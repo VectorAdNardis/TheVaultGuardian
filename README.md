@@ -2,7 +2,7 @@
 
 A fast-paced, arcade-style web game that teaches password security through gameplay. Defend your vault against waves of cyber threats using real-world security tools as weapons.
 
-Built as a kiosk-friendly experience for tradeshow screens, mapping each defensive power-up to actual LastPass Business Max capabilities.
+Built as a kiosk-friendly experience for tradeshow screens, mapping each defensive power-up to real password management and security capabilities.
 
 ## Play It
 
