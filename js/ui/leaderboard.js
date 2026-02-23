@@ -151,7 +151,7 @@
     if (killData && killData.killsByType && killData.enemyCfg) {
       html += '<div class="lb-kills-section">';
       var outcomeClass = killData.survived ? 'win' : 'lose';
-      html += '<h4 class="lb-kills-heading ' + outcomeClass + '">' + (killData.survived ? 'Vault Defended!' : 'Vault Compromised') + '</h4>';
+      html += '<h4 class="lb-kills-heading ' + outcomeClass + '">' + (killData.survived ? 'Fort Defended!' : 'Fort Compromised') + '</h4>';
       html += '<div class="lb-kills-grid">';
       var types = Object.keys(killData.enemyCfg);
       for (var j = 0; j < types.length; j++) {

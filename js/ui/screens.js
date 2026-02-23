@@ -59,14 +59,14 @@
     var autoEl = els.summary.querySelector('.summary-auto-reset');
 
     if (data.survived) {
-      heading.textContent = 'Vault Defended!';
+      heading.textContent = 'Fort Defended!';
       heading.className = 'summary-heading win';
-      outcomeEl.textContent = 'You successfully protected the vault from all threats.';
+      outcomeEl.textContent = 'You successfully protected the fort from all threats.';
       outcomeEl.className = 'summary-outcome win';
     } else {
-      heading.textContent = 'Vault Compromised';
+      heading.textContent = 'Fort Compromised';
       heading.className = 'summary-heading lose';
-      outcomeEl.textContent = 'The vault was breached. Threats overwhelmed your defenses.';
+      outcomeEl.textContent = 'The fort was breached. Threats overwhelmed your defenses.';
       outcomeEl.className = 'summary-outcome lose';
     }
 
@@ -202,7 +202,7 @@
   /* ---- Outcome Flash (brief heading-only display) ---- */
   function showOutcomeFlash(survived) {
     var heading = els.summary.querySelector('.summary-heading');
-    heading.textContent = survived ? 'Vault Defended!' : 'Vault Compromised';
+    heading.textContent = survived ? 'Fort Defended!' : 'Fort Compromised';
     heading.className = 'summary-heading ' + (survived ? 'win' : 'lose');
     els.summary.classList.remove('hidden');
     els.summary.classList.add('flash-only');

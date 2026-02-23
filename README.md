@@ -31,7 +31,7 @@ Combined with MFA, SSO, and SaaS monitoring, organizations can build a defense-i
 - **Keyboard aim**: WASD or arrow keys to rotate aim direction
 - **Power-ups**: Shoot the floating chip pickups to collect weapons
 - **Activate**: Press 1–5 or click the weapon bar to equip
-- **Goal**: Survive 5 waves (2.5 minutes) and protect the vault's integrity
+- **Goal**: Survive 5 waves (2.5 minutes) and protect the fort's integrity
 
 ## Weapons & Power-Ups
 
@@ -53,11 +53,11 @@ Threats escalate across 5 waves, introducing tougher enemies as the game progres
 
 | Threat | HP | Damage | Speed | First Appears |
 |--------|----|--------|-------|---------------|
-| Bad Password | 1 | 6 | Fast | Wave 1: Recon |
-| Phishing | 2 | 9 | Fast | Wave 2: Infiltration |
-| Shadow IT | 3 | 8 | Medium | Wave 3: Escalation |
-| Third Party | 4 | 12 | Slow | Wave 4: Assault |
-| Hacker | 5 | 15 | Slow | Wave 5: Full Breach |
+| Bad Password | 1 | 6 | Fast | Wave 1 |
+| Phishing | 2 | 9 | Fast | Wave 2 |
+| Shadow IT | 3 | 8 | Medium | Wave 3 |
+| Third Party | 4 | 12 | Slow | Wave 4 |
+| Hacker | 5 | 15 | Slow | Wave 5 |
 
 ## Scoring & Ranks
 

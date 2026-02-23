@@ -88,11 +88,11 @@
       popupDurationSeconds: 6,
       maxInventorySlots: 5,
       waves: [
-        { name: 'Recon', duration: 30, spawnInterval: 3.5, enemies: ['WEAK_PASSWORD'], speedMultiplier: 0.45 },
-        { name: 'Infiltration', duration: 30, spawnInterval: 2.8, enemies: ['WEAK_PASSWORD', 'SHADOW_IT_APP'], speedMultiplier: 0.55 },
-        { name: 'Escalation', duration: 30, spawnInterval: 2.2, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD'], speedMultiplier: 0.7 },
-        { name: 'Assault', duration: 30, spawnInterval: 1.6, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING'], speedMultiplier: 0.85 },
-        { name: 'Full Breach', duration: 30, spawnInterval: 1.0, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING', 'INSIDER_ANOMALY'], speedMultiplier: 1.1 }
+        { name: 'Wave 1', duration: 30, spawnInterval: 3.5, enemies: ['WEAK_PASSWORD'], speedMultiplier: 0.45 },
+        { name: 'Wave 2', duration: 30, spawnInterval: 2.8, enemies: ['WEAK_PASSWORD', 'SHADOW_IT_APP'], speedMultiplier: 0.55 },
+        { name: 'Wave 3', duration: 30, spawnInterval: 2.2, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD'], speedMultiplier: 0.7 },
+        { name: 'Wave 4', duration: 30, spawnInterval: 1.6, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING'], speedMultiplier: 0.85 },
+        { name: 'Wave 5', duration: 30, spawnInterval: 1.0, enemies: ['SHADOW_IT_APP', 'SHADOW_AI_BOT', 'WEAK_PASSWORD', 'PHISHING', 'INSIDER_ANOMALY'], speedMultiplier: 1.1 }
       ],
       pickupSpawnInterval: 10, pickupSpawnVariance: 3, maxActivePowerups: 2,
       colorBlindMode: false, reducedMotion: false, audioEnabled: true,
