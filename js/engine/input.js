@@ -14,6 +14,7 @@
   var aimY = 0;
   var aimAngle = 0;             // radians
   var fireRequested = false;
+  var fireHeld = false;         // true while mouse/touch is held down
   var lastActivityTime = 0;
   var pointerActive = false;    // true if mouse/touch has moved at least once
   var keyboardAimSpeed = 3;     // radians per second for keyboard aim
@@ -40,7 +41,12 @@
       aimY = e.clientY;
       pointerActive = true;
       fireRequested = true;
+      fireHeld = true;
       _activity();
+    });
+
+    window.addEventListener('mouseup', function () {
+      fireHeld = false;
     });
 
     // Touch
@@ -51,8 +57,16 @@
       aimY = t.clientY;
       pointerActive = true;
       fireRequested = true;
+      fireHeld = true;
       _activity();
     }, { passive: false });
+
+    canvasEl.addEventListener('touchend', function () {
+      fireHeld = false;
+    });
+    canvasEl.addEventListener('touchcancel', function () {
+      fireHeld = false;
+    });
 
     canvasEl.addEventListener('touchmove', function (e) {
       e.preventDefault();
@@ -123,10 +137,12 @@
 
   function getAimAngle() { return aimAngle; }
   function getLastActivity() { return lastActivityTime; }
+  function isFireHeld() { return fireHeld || !!keys['Space']; }
 
   /* Reset for new game */
   function reset() {
     fireRequested = false;
+    fireHeld = false;
     lastActivityTime = performance.now() / 1000;
   }
 
@@ -145,6 +161,7 @@
     init: init,
     update: update,
     consumeFire: consumeFire,
+    isFireHeld: isFireHeld,
     getAimAngle: getAimAngle,
     getLastActivity: getLastActivity,
     reset: reset,

@@ -23,7 +23,7 @@
   var shownPopups = {};      // { 'STRONG_PASSWORD': true, ... } — show-once per session
 
   // Fixed display order for weapon bar (maps to keys 1-5)
-  var POWERUP_ORDER = ['STRONG_PASSWORD', 'SSO', 'PASSWORD_MANAGER', 'MFA', 'IT_ADMIN_DASHBOARD'];
+  var POWERUP_ORDER = ['STRONG_PASSWORD', 'SSO', 'MFA', 'PASSWORD_MANAGER', 'IT_ADMIN_DASHBOARD'];
 
   var gameTime = 0;       // total elapsed game time (seconds)
   var timeLeft = 0;       // countdown (seconds)
@@ -111,10 +111,10 @@
       },
       powerups: {
         STRONG_PASSWORD: { icon: 'SP', durationSeconds: 10, rarity: 0.3, label: 'Strong Password', chipColor: '#FF6B6B', type: 'weapon', priority: 1, description: 'Strong, unique passwords are your first line of defense. LastPass generates and stores complex passwords so you never have to remember them.' },
-        MFA: { icon: 'MF', durationSeconds: 8, rarity: 0.2, label: 'Multi-Factor Auth', chipColor: '#4ECDC4', type: 'weapon', priority: 4, description: 'MFA blocks 99.9% of automated attacks. Even if a password is stolen, multi-factor authentication stops unauthorized access cold.' },
+        MFA: { icon: 'MF', durationSeconds: 8, rarity: 0.2, label: 'Multi-Factor Auth', chipColor: '#4ECDC4', type: 'weapon', priority: 3, description: 'MFA blocks 99.9% of automated attacks. Even if a password is stolen, multi-factor authentication stops unauthorized access cold.' },
         SSO: { icon: 'SS', durationSeconds: 8, rarity: 0.2, label: 'Single Sign-On', chipColor: '#45B7D1', type: 'weapon', priority: 2, description: 'One secure login for all your apps. Single Sign-On eliminates password fatigue and reduces attack surfaces across your organization.' },
-        PASSWORD_MANAGER: { icon: 'PM', durationSeconds: 7, rarity: 0.15, label: 'Password Manager', chipColor: '#96CEB4', type: 'weapon', priority: 3, description: 'Password reuse is the #1 cause of breaches. A password manager secures every credential and eliminates the risk automatically.' },
-        IT_ADMIN_DASHBOARD: { icon: 'IT', durationSeconds: 5, rarity: 0.15, label: 'IT Admin Dashboard', chipColor: '#FFEAA7', type: 'tool', priority: 0, description: 'Freeze all threats! The Admin Dashboard reveals Shadow IT, enforces security policies, and stops threats cold across your organization.' }
+        PASSWORD_MANAGER: { icon: 'PM', durationSeconds: 7, rarity: 0.15, label: 'Password Manager', chipColor: '#96CEB4', type: 'weapon', priority: 4, description: 'Password reuse is the #1 cause of breaches. A password manager secures every credential and eliminates the risk automatically.' },
+        IT_ADMIN_DASHBOARD: { icon: 'IT', durationSeconds: 5, rarity: 0.15, label: 'SaaS Monitoring & Protect', chipColor: '#FFEAA7', type: 'tool', priority: 0, description: 'Freeze all threats! SaaS Monitoring reveals Shadow IT, enforces security policies, and stops threats cold across your organization.' }
       },
       baseEnemySpeed: 60, projectileSpeed: 1000, projectileDamage: 1,
       fireRate: 0.15, idleTimeoutSeconds: 20, attractResetSeconds: 15,
@@ -472,7 +472,7 @@
   /* ==== Weapon System ==== */
 
   /* Determine current active weapon variant based on powerup priority.
-     MFA (4) > PASSWORD_MANAGER (3) > SSO (2) > STRONG_PASSWORD (1) > DEFAULT (0) */
+     PASSWORD_MANAGER (4) > MFA (3) > SSO (2) > STRONG_PASSWORD (1) > DEFAULT (0) */
   function getActiveWeapon() {
     var best = null;
     var bestPrio = -1;
@@ -511,20 +511,20 @@
         playSound('shoot');
         break;
 
-      case 'MFA':
+      case 'SSO':
         // Persistent laser line
         lasers.push(G.Entities.createLaser(aimAngle, 2.5));
         playSound('laser');
         break;
 
-      case 'SSO':
+      case 'MFA':
         // Shotgun cone burst (7 beams in ~40 degree spread)
         var count = 7;
         var totalSpread = 0.35; // ~20 degrees each side
         for (var i = 0; i < count; i++) {
           var a = aimAngle - totalSpread + (totalSpread * 2 / (count - 1)) * i;
           var s = speed * (0.85 + Math.random() * 0.3);
-          projectiles.push(G.Entities.createProjectile(vault.x, vault.y, a, s, 'SSO'));
+          projectiles.push(G.Entities.createProjectile(vault.x, vault.y, a, s, 'MFA'));
         }
         playSound('shoot');
         break;
@@ -635,9 +635,9 @@
     fireCooldown -= dt;
     var weapon = getActiveWeapon();
     if (weapon === 'STRONG_PASSWORD') {
-      // Continuous auto-fire stream while Strong Password is active
+      // Continuous stream only while holding mouse/space
       G.Input.consumeFire(); // consume any pending fire to prevent double-shot
-      if (fireCooldown <= 0) {
+      if (G.Input.isFireHeld() && fireCooldown <= 0) {
         fireWeapon(G.Input.getAimAngle());
         fireCooldown = 0.06; // very fast stream (~16 shots/sec)
       }
