@@ -114,7 +114,7 @@
         MFA: { icon: 'MF', durationSeconds: 8, rarity: 0.2, label: 'Multi-Factor Auth', chipColor: '#4ECDC4', type: 'weapon', priority: 3, description: 'MFA blocks 99.9% of automated attacks. Even if a password is stolen, multi-factor authentication stops unauthorized access cold.' },
         SSO: { icon: 'SS', durationSeconds: 8, rarity: 0.2, label: 'Single Sign-On', chipColor: '#45B7D1', type: 'weapon', priority: 2, description: 'One secure login for all your apps. Single Sign-On eliminates password fatigue and reduces attack surfaces across your organization.' },
         PASSWORD_MANAGER: { icon: 'PM', durationSeconds: 7, rarity: 0.15, label: 'Password Manager', chipColor: '#96CEB4', type: 'weapon', priority: 4, description: 'Password reuse is the #1 cause of breaches. A password manager secures every credential and eliminates the risk automatically.' },
-        IT_ADMIN_DASHBOARD: { icon: 'IT', durationSeconds: 5, rarity: 0.15, label: 'SaaS Monitoring & Protect', chipColor: '#FFEAA7', type: 'tool', priority: 0, description: 'Freeze all threats! SaaS Monitoring reveals Shadow IT, enforces security policies, and stops threats cold across your organization.' }
+        IT_ADMIN_DASHBOARD: { icon: 'IT', durationSeconds: 5, rarity: 0.15, label: 'IT Dashboard', chipColor: '#FFEAA7', type: 'tool', priority: 0, description: 'Freeze all threats! The IT Dashboard lets you track password habits, measure your organization\'s health score, enforce security policies, and reveal Shadow IT threats.' }
       },
       baseEnemySpeed: 60, projectileSpeed: 1000, projectileDamage: 1,
       fireRate: 0.15, idleTimeoutSeconds: 20, attractResetSeconds: 15,

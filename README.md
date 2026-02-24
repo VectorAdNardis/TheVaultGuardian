@@ -43,7 +43,7 @@ Each weapon maps to a real security capability. Stronger weapons deal more damag
 | 2 | **SSO** | Persistent laser beam | 3x | One secure login for all apps, reducing attack surface |
 | 3 | **Multi-Factor Auth** | Shotgun cone burst (7 beams) | 4x | Blocks 99.9% of automated attacks, even with stolen passwords |
 | 4 | **Password Manager** | Expanding ring shockwave | 5x | Eliminates password reuse, the #1 cause of breaches |
-| 5 | **SaaS Monitoring** | Slows all enemies 35% | — | Reveals Shadow IT and enforces security policies |
+| 5 | **IT Dashboard** | Slows all enemies 35% | — | Track password habits, measure health score, enforce policies, reveal Shadow IT |
 
 Without a power-up, you fire a single beam at 1x damage.
 

@@ -169,11 +169,11 @@
       "icon": "IT",
       "durationSeconds": 5,
       "rarity": 0.15,
-      "label": "SaaS Monitoring & Protect",
+      "label": "IT Dashboard",
       "chipColor": "#FFEAA7",
       "type": "tool",
       "priority": 0,
-      "description": "Freeze all threats! SaaS Monitoring reveals Shadow IT, enforces security policies, and stops threats cold across your organization."
+      "description": "Freeze all threats! The IT Dashboard lets you track password habits, measure your organization's health score, enforce security policies, and reveal Shadow IT threats."
     }
   },
   "baseEnemySpeed": 60,
