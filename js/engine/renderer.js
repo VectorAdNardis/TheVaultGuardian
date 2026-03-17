@@ -318,28 +318,27 @@
   }
 
   /* ---- Vault Core ---- */
-  /* ---- Pixel-art Digital Fortress ---- */
+  /* ---- Pixel-art Rocket Ship (pointing LEFT) ---- */
 
-  // 16x16 fortress sprite — front-facing castle/tower structure
-  // Legend: 0=empty, 1=dark wall, 2=mid wall, 3=light wall/highlight,
-  //         4=window/circuit glow, 5=door/gate, 6=battlement top
+  // 24x14 rocket sprite — pointing left, elongated fuselage
+  // Legend: 0=empty, 1=body (white/light grey), 2=body shadow (darker),
+  //         3=nose cone (red), 4=window (blue glow), 5=fin (red/orange),
+  //         6=flame (orange/yellow), 7=flame tip (bright yellow)
   var FORTRESS_SPRITE = [
-    [0,0,0,6,6,0,0,0,0,0,6,6,0,0,0,0],
-    [0,0,0,6,6,0,6,6,6,0,6,6,0,0,0,0],
-    [0,6,6,1,1,6,6,1,6,6,1,1,6,6,0,0],
-    [0,6,6,1,1,1,1,1,1,1,1,1,6,6,0,0],
-    [0,1,1,1,4,1,1,3,1,1,4,1,1,1,0,0],
-    [0,1,1,1,4,1,1,3,1,1,4,1,1,1,0,0],
-    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-    [0,1,2,1,4,1,2,2,2,1,4,1,2,1,0,0],
-    [0,1,2,1,4,1,2,3,2,1,4,1,2,1,0,0],
-    [0,1,2,1,1,1,2,3,2,1,1,1,2,1,0,0],
-    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
-    [1,1,1,1,4,1,1,5,1,1,4,1,1,1,1,0],
-    [1,2,1,1,4,1,1,5,1,1,4,1,1,2,1,0],
-    [1,2,1,1,1,1,1,5,1,1,1,1,1,2,1,0],
-    [1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,0]
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,1,1,0,0,0,0],
+    [0,0,0,0,0,3,3,0,0,0,1,1,1,1,1,5,1,1,1,1,6,0,0,0],
+    [0,0,0,3,3,3,3,1,1,1,1,1,1,1,1,1,1,4,1,1,6,6,0,0],
+    [0,0,3,3,3,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,6,6,7,0],
+    [0,3,3,1,1,1,1,1,1,2,1,1,1,1,1,4,1,1,2,1,6,6,7,7],
+    [3,3,1,1,1,2,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,6,7,7],
+    [3,3,1,1,1,2,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,6,7,7],
+    [0,3,3,1,1,1,1,1,1,2,1,1,1,1,1,4,1,1,2,1,6,6,7,7],
+    [0,0,3,3,3,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,6,6,7,0],
+    [0,0,0,3,3,3,3,1,1,1,1,1,1,1,1,1,1,4,1,1,6,6,0,0],
+    [0,0,0,0,0,3,3,0,0,0,1,1,1,1,1,5,1,1,1,1,6,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,1,1,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0]
   ];
 
   function drawVault(vault, time, scale) {
@@ -382,7 +381,7 @@
     var sprite = FORTRESS_SPRITE;
     var rows = sprite.length;
     var cols = sprite[0].length;
-    var pixSize = Math.floor(r * 2.2 / Math.max(rows, cols));
+    var pixSize = Math.floor(r * 1.75 / Math.max(rows, cols));
     if (pixSize < 3) pixSize = 3;
     var totalW = cols * pixSize;
     var totalH = rows * pixSize;
@@ -402,38 +401,43 @@
         var color;
 
         switch (val) {
-          case 1: // Dark wall
-            color = intPct > 0.25 ? '#3B4A6B' : '#6B2A2A';
+          case 1: // Body (white/light)
+            color = intPct > 0.25 ? '#D0D8E8' : '#A08080';
             break;
-          case 2: // Mid wall
-            color = intPct > 0.25 ? '#4A5F8C' : '#8B3535';
+          case 2: // Body shadow
+            color = intPct > 0.25 ? '#9AA8C0' : '#806060';
             break;
-          case 3: // Highlight
-            color = intPct > 0.25 ? '#6B82B0' : '#A54545';
+          case 3: // Nose cone (red)
+            color = intPct > 0.25 ? '#E74C3C' : '#AA3333';
             break;
-          case 4: // Circuit glow (animated)
+          case 4: // Window (blue glow, animated)
             var cA = (0.7 + 0.3 * circuitPulse);
             if (intPct > 0.5) {
-              color = 'rgba(78, 255, 230, ' + cA.toFixed(2) + ')';
+              color = 'rgba(100, 180, 255, ' + cA.toFixed(2) + ')';
             } else if (intPct > 0.25) {
               color = 'rgba(255, 200, 50, ' + cA.toFixed(2) + ')';
             } else {
               color = 'rgba(255, 80, 80, ' + cA.toFixed(2) + ')';
             }
             break;
-          case 5: // Door/gate
-            color = '#0F1520';
+          case 5: // Fins (red/dark red)
+            color = intPct > 0.25 ? '#C0392B' : '#882222';
             break;
-          case 6: // Battlements
-            color = intPct > 0.25 ? '#2A5090' : '#8B2020';
+          case 6: // Flame (orange)
+            var fA = (0.7 + 0.3 * Math.sin(circuitPulse * Math.PI * 2 + val));
+            color = 'rgba(255, 160, 40, ' + fA.toFixed(2) + ')';
+            break;
+          case 7: // Flame tip (bright yellow, animated flicker)
+            var ftA = (0.6 + 0.4 * Math.sin(circuitPulse * Math.PI * 3 + 1.5));
+            color = 'rgba(255, 240, 80, ' + ftA.toFixed(2) + ')';
             break;
         }
 
         ctx.fillStyle = color;
         ctx.fillRect(px, py, pixSize, pixSize);
 
-        // Pixel border for definition
-        if (val !== 4 && val !== 5) {
+        // Pixel border for definition (skip glowing elements)
+        if (val !== 4 && val !== 6 && val !== 7) {
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
           ctx.lineWidth = 0.5;
           ctx.strokeRect(px, py, pixSize, pixSize);
