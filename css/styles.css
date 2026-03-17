@@ -463,6 +463,16 @@ html, body {
   color: var(--brand-accent);
 }
 
+.tutorial-dismiss {
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--hud-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulse-cta 2s ease-in-out infinite;
+}
+
 /* ---- Attract Screen ---- */
 #attract-screen {
   position: fixed;
@@ -669,6 +679,119 @@ html, body {
 .summary-auto-reset {
   font-size: 12px;
   color: var(--hud-dim);
+}
+
+/* ---- Post-Game Debrief Screen ---- */
+#debrief-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 31;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(6, 10, 18, 0.92);
+  pointer-events: all;
+  cursor: pointer;
+}
+
+#debrief-screen.hidden {
+  display: none;
+}
+
+.debrief-card {
+  background: var(--hud-panel-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 16px;
+  padding: 32px 40px;
+  max-width: 520px;
+  min-width: 340px;
+  text-align: center;
+  animation: popup-enter 0.3s ease-out;
+}
+
+.debrief-heading {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--brand-accent);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: 16px;
+}
+
+.debrief-rank-msg {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--hud-text);
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--hud-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.debrief-weapons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.debrief-weapon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border: 1px solid;
+}
+
+.debrief-weapon.used {
+  border-color: #4ECDC4;
+  color: #4ECDC4;
+  background: rgba(78, 205, 196, 0.1);
+}
+
+.debrief-weapon.missed {
+  border-color: var(--brand-accent);
+  color: var(--brand-accent);
+  background: rgba(255, 23, 68, 0.08);
+  opacity: 0.7;
+}
+
+.debrief-weapon .dw-icon {
+  font-size: 16px;
+}
+
+.debrief-missing {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--brand-accent);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.debrief-cta {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--hud-text);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.debrief-continue {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--hud-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulse-cta 2s ease-in-out infinite;
 }
 
 /* ---- Power-up Educational Popup ---- */

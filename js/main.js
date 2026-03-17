@@ -21,6 +21,7 @@
   var activePowerups = [];
   var inventory = {};        // { 'STRONG_PASSWORD': 2, 'MFA': 0, ... } — count per type
   var shownPopups = {};      // { 'STRONG_PASSWORD': true, ... } — show-once per session
+  var weaponsUsed = {};      // tracks which weapon types were collected during game
 
   // Fixed display order for weapon bar (maps to keys 1-5)
   var POWERUP_ORDER = ['STRONG_PASSWORD', 'SSO', 'MFA', 'PASSWORD_MANAGER', 'IT_ADMIN_DASHBOARD'];
@@ -273,6 +274,7 @@
     effects = [];
     activePowerups = [];
     inventory = {};
+    weaponsUsed = {};
 
     gameTime = 0;
     timeLeft = cfg.durationSeconds;
@@ -294,8 +296,8 @@
     G.Leaderboard.hide();
     G.HUD.show();
 
-    // Show tutorial briefly
-    G.Screens.showTutorial(3000);
+    // Show tutorial (first play only, dismissible)
+    G.Screens.showTutorial(5000);
 
     if (isDemo) console.log('[DEMO] Game started');
   }
@@ -316,26 +318,36 @@
       console.log('[DEMO] Game ended. Survived:', survived, 'Score:', score, 'Rank:', rank);
     }
 
-    // Brief outcome flash, then leaderboard with embedded initials
+    // Brief outcome flash → debrief → leaderboard with embedded initials
     G.Screens.showOutcomeFlash(survived);
 
     setTimeout(function () {
       if (!G.State.is(G.State.STATES.SUMMARY)) return;
       G.Screens.hideOutcomeFlash();
 
-      G.Leaderboard.show(score, {
-        killsByType: G.Scoring.getKillsByType(),
-        enemyCfg: cfg.enemies,
+      // Show debrief screen, then leaderboard on dismiss
+      G.Screens.showDebrief({
+        rank: rank,
+        weaponsUsed: weaponsUsed,
         survived: survived
-      }, {
-        pendingEntry: true,
-        initialsTimeout: cfg.initialsTimeoutSeconds,
-        onInitialsSubmit: function (initials) {
-          G.Leaderboard.addEntry(initials, score, rank);
-          G.Leaderboard.reRender(score);
-        }
+      }, function () {
+        // After debrief dismissed, show leaderboard
+        if (!G.State.is(G.State.STATES.SUMMARY)) return;
+
+        G.Leaderboard.show(score, {
+          killsByType: G.Scoring.getKillsByType(),
+          enemyCfg: cfg.enemies,
+          survived: survived
+        }, {
+          pendingEntry: true,
+          initialsTimeout: cfg.initialsTimeoutSeconds,
+          onInitialsSubmit: function (initials) {
+            G.Leaderboard.addEntry(initials, score, rank);
+            G.Leaderboard.reRender(score);
+          }
+        });
+        summaryIdleTimer = 0;
       });
-      summaryIdleTimer = 0;
     }, 1200);
   }
 
@@ -344,6 +356,7 @@
     G.Screens.showAttract();
     G.Screens.hideSummary();
     G.Screens.hideInitials();
+    G.Screens.hideDebrief();
     G.Leaderboard.hide();
     G.HUD.hide();
   }
@@ -865,6 +878,7 @@
 
     if (!inventory[pk.type]) inventory[pk.type] = 0;
     inventory[pk.type]++;
+    weaponsUsed[pk.type] = true;
 
     // Show educational popup (only once per type per session)
     if (!shownPopups[pk.type]) {

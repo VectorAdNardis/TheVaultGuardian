@@ -11,6 +11,9 @@
   var initialsTimer = null;
   var initialsCountdown = 0;
 
+  var debriefCallback = null;
+  var debriefTimer = null;
+
   function init() {
     els.attract = document.getElementById('attract-screen');
     els.summary = document.getElementById('summary-screen');
@@ -23,6 +26,10 @@
     els.popupDesc = document.getElementById('popup-desc');
     els.popupIcon = document.getElementById('popup-icon');
     els.popupBadge = document.getElementById('popup-badge');
+    els.debrief = document.getElementById('debrief-screen');
+    els.debriefRankMsg = document.getElementById('debrief-rank-msg');
+    els.debriefWeapons = document.getElementById('debrief-weapons');
+    els.debriefMissing = document.getElementById('debrief-missing');
   }
 
   /* ---- Attract Screen ---- */
@@ -39,11 +46,35 @@
   }
 
   /* ---- Tutorial ---- */
+  var tutorialShown = false;
+  var tutorialTimer = null;
+
   function showTutorial(durationMs) {
+    if (tutorialShown) return; // only show once per session
+    tutorialShown = true;
     els.tutorial.classList.add('visible');
-    setTimeout(function () {
+    els.tutorial.style.pointerEvents = 'all';
+
+    function dismiss() {
+      if (tutorialTimer) { clearTimeout(tutorialTimer); tutorialTimer = null; }
       els.tutorial.classList.remove('visible');
-    }, durationMs || 3000);
+      els.tutorial.style.pointerEvents = '';
+      els.tutorial.removeEventListener('click', dismiss);
+      els.tutorial.removeEventListener('touchstart', dismiss);
+      window.removeEventListener('keydown', dismissKey);
+    }
+
+    function dismissKey(e) {
+      if (e.code === 'Space' || e.code === 'Enter' || e.key.length === 1) {
+        dismiss();
+      }
+    }
+
+    els.tutorial.addEventListener('click', dismiss);
+    els.tutorial.addEventListener('touchstart', dismiss);
+    window.addEventListener('keydown', dismissKey);
+
+    tutorialTimer = setTimeout(dismiss, durationMs || 5000);
   }
 
   /* ---- Summary / End Screen ---- */
@@ -213,6 +244,79 @@
     els.summary.classList.remove('flash-only');
   }
 
+  /* ---- Post-Game Debrief ---- */
+  function showDebrief(data, callback) {
+    if (!els.debrief) { if (callback) callback(); return; }
+
+    debriefCallback = callback;
+
+    // Rank-specific message
+    var rankMessages = {
+      'Novice': 'Your vault was under-defended. Your organisation may have similar gaps — ask us how to close them.',
+      'Analyst': 'You deployed some controls, but gaps remain. Layered security is the key to resilience.',
+      'Guardian': 'Solid defence. You understand the fundamentals — now imagine this level of protection across your entire organisation.',
+      'Sentinel': 'Impressive. You used most of the tools available. Very few threats got through.',
+      'Zero-Knowledge Master': 'Maximum protection achieved. You deployed all five controls and defended the vault completely.'
+    };
+    els.debriefRankMsg.textContent = rankMessages[data.rank] || rankMessages['Novice'];
+
+    // Weapon breakdown
+    var weaponDefs = {
+      'STRONG_PASSWORD': { label: 'Strong Passwords', icon: '\u{1F6E1}' },
+      'SSO': { label: 'Single Sign-On', icon: '\u{1F511}' },
+      'MFA': { label: 'Multi-Factor Auth', icon: '\u{2714}\u{FE0F}' },
+      'PASSWORD_MANAGER': { label: 'Password Manager', icon: '\u{1F512}' },
+      'IT_ADMIN_DASHBOARD': { label: 'IT Dashboard', icon: '\u{1F4CA}' }
+    };
+
+    var allTypes = ['STRONG_PASSWORD', 'SSO', 'MFA', 'PASSWORD_MANAGER', 'IT_ADMIN_DASHBOARD'];
+    var weaponsHTML = '';
+    var missingList = [];
+
+    for (var i = 0; i < allTypes.length; i++) {
+      var t = allTypes[i];
+      var def = weaponDefs[t];
+      var wasUsed = data.weaponsUsed && data.weaponsUsed[t];
+      var cls = wasUsed ? 'used' : 'missed';
+      weaponsHTML += '<div class="debrief-weapon ' + cls + '">';
+      weaponsHTML += '<span class="dw-icon">' + def.icon + '</span>';
+      weaponsHTML += '<span>' + def.label + '</span>';
+      weaponsHTML += wasUsed ? ' \u2713' : ' \u2717';
+      weaponsHTML += '</div>';
+      if (!wasUsed) missingList.push(def.label);
+    }
+    els.debriefWeapons.innerHTML = weaponsHTML;
+
+    if (missingList.length > 0) {
+      els.debriefMissing.textContent = 'Missing: ' + missingList.join(', ');
+    } else {
+      els.debriefMissing.textContent = 'All controls deployed!';
+      els.debriefMissing.style.color = '#4ECDC4';
+    }
+
+    els.debrief.classList.remove('hidden');
+
+    function dismiss() {
+      hideDebrief();
+      if (debriefCallback) { debriefCallback(); debriefCallback = null; }
+    }
+
+    // Auto-advance after 8 seconds
+    debriefTimer = setTimeout(dismiss, 8000);
+
+    // Dismiss on click/tap/key
+    els.debrief.onclick = function () { dismiss(); };
+    els.debrief.ontouchstart = function (e) { e.preventDefault(); dismiss(); };
+  }
+
+  function hideDebrief() {
+    if (!els.debrief) return;
+    els.debrief.classList.add('hidden');
+    els.debrief.onclick = null;
+    els.debrief.ontouchstart = null;
+    if (debriefTimer) { clearTimeout(debriefTimer); debriefTimer = null; }
+  }
+
   G.Screens = {
     init: init,
     showAttract: showAttract,
@@ -225,6 +329,8 @@
     showPowerupPopup: showPowerupPopup,
     hidePowerupPopup: hidePowerupPopup,
     showOutcomeFlash: showOutcomeFlash,
-    hideOutcomeFlash: hideOutcomeFlash
+    hideOutcomeFlash: hideOutcomeFlash,
+    showDebrief: showDebrief,
+    hideDebrief: hideDebrief
   };
 })();

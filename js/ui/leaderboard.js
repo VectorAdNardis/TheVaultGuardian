@@ -8,6 +8,7 @@
 
   var STORAGE_KEY = 'vaultguardian_leaderboard';
   var MAX_ENTRIES = 10;
+  var sessionEntries = []; // in-memory only, cleared on page refresh
 
   /* ---- Data ---- */
   function _load() {
@@ -24,19 +25,34 @@
     } catch (e) { /* ignore */ }
   }
 
+  function _sanitiseInitials(raw) {
+    // Alphanumeric only, 3 chars max
+    var clean = (raw || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase().substring(0, 3);
+    return clean || 'GST';
+  }
+
   function addEntry(initials, score, rank) {
-    var entries = _load();
-    entries.push({
-      initials: (initials || 'GST').toUpperCase().substring(0, 3),
+    var sanitised = _sanitiseInitials(initials);
+    var entry = {
+      initials: sanitised,
       score: score,
       rank: rank,
       timestamp: Date.now()
-    });
+    };
+
+    // Add to persistent storage
+    var entries = _load();
+    entries.push(entry);
     entries.sort(function (a, b) { return b.score - a.score; });
     if (entries.length > MAX_ENTRIES * 3) {
-      entries = entries.slice(0, MAX_ENTRIES * 3); // keep generous buffer
+      entries = entries.slice(0, MAX_ENTRIES * 3);
     }
     _save(entries);
+
+    // Add to session
+    sessionEntries.push(entry);
+    sessionEntries.sort(function (a, b) { return b.score - a.score; });
+
     return entries;
   }
 
@@ -55,13 +71,18 @@
     return today.slice(0, MAX_ENTRIES);
   }
 
+  function getSession() {
+    return sessionEntries.slice(0, MAX_ENTRIES);
+  }
+
   function clearAll() {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+    sessionEntries = [];
   }
 
   /* ---- UI Rendering ---- */
   var panelEl = null;
-  var currentTab = 'today';
+  var currentTab = 'session';
   var killData = null;
   var restartCallback = null;
   var pendingOptions = null;
@@ -74,7 +95,7 @@
 
   function show(highlightScore, extraData, options) {
     if (!panelEl) return;
-    currentTab = 'today';
+    currentTab = 'session';
     killData = extraData || null;
     pendingOptions = options || null;
 
@@ -108,7 +129,7 @@
   }
 
   function _render(highlightScore) {
-    var entries = currentTab === 'today' ? getToday() : getAll();
+    var entries = currentTab === 'session' ? getSession() : (currentTab === 'today' ? getToday() : getAll());
 
     var html = '<div class="lb-container">';
 
@@ -127,6 +148,7 @@
 
     html += '<h3>Leaderboard</h3>';
     html += '<div class="lb-tabs">';
+    html += '<button class="lb-tab' + (currentTab === 'session' ? ' active' : '') + '" data-tab="session">Session</button>';
     html += '<button class="lb-tab' + (currentTab === 'today' ? ' active' : '') + '" data-tab="today">Today</button>';
     html += '<button class="lb-tab' + (currentTab === 'alltime' ? ' active' : '') + '" data-tab="alltime">All-Time</button>';
     html += '</div>';
@@ -250,8 +272,7 @@
     var lbInput = document.getElementById('lb-initials-input');
     var val = 'GST';
     if (lbInput) {
-      val = lbInput.value.trim().toUpperCase() || 'GST';
-      if (val.length > 3) val = val.substring(0, 3);
+      val = _sanitiseInitials(lbInput.value);
       lbInput.onkeydown = null;
     }
 
@@ -312,6 +333,7 @@
     addEntry: addEntry,
     getAll: getAll,
     getToday: getToday,
+    getSession: getSession,
     clearAll: clearAll,
     initClearControl: initClearControl
   };
