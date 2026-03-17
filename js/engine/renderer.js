@@ -720,10 +720,15 @@
 
     switch (proj.variant) {
       case 'STRONG_PASSWORD':
-        ctx.strokeStyle = '#FF4444';
-        ctx.lineWidth = 3;
-        ctx.shadowColor = '#FF4444';
-        ctx.shadowBlur = 8;
+        ctx.strokeStyle = '#4ADE80';
+        ctx.lineWidth = 6;
+        ctx.shadowColor = '#22C55E';
+        ctx.shadowBlur = 14;
+        ctx.beginPath(); ctx.moveTo(tailX, tailY); ctx.lineTo(x, y); ctx.stroke();
+        // Inner bright core
+        ctx.strokeStyle = '#BBFFD0';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 0;
         ctx.beginPath(); ctx.moveTo(tailX, tailY); ctx.lineTo(x, y); ctx.stroke();
         break;
 

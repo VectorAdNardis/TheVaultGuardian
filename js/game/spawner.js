@@ -125,9 +125,11 @@
     return result;
   }
 
-  /* Weighted random pickup selection based on rarity */
+  /* Weighted random pickup selection based on rarity (excludes IT Dashboard) */
   function _weightedPickup(cfg) {
-    var types = Object.keys(cfg.powerups);
+    var types = Object.keys(cfg.powerups).filter(function (t) {
+      return t !== 'IT_ADMIN_DASHBOARD';
+    });
     var totalWeight = 0;
     for (var i = 0; i < types.length; i++) {
       totalWeight += cfg.powerups[types[i]].rarity;

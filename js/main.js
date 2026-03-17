@@ -557,10 +557,8 @@
 
     switch (weapon) {
       case 'STRONG_PASSWORD':
-        // Twin beams with slight angle spread
-        var spread = 0.08; // ~4.5 degrees
-        projectiles.push(G.Entities.createProjectile(vault.x, vault.y, aimAngle - spread, speed, 'STRONG_PASSWORD'));
-        projectiles.push(G.Entities.createProjectile(vault.x, vault.y, aimAngle + spread, speed, 'STRONG_PASSWORD'));
+        // Single heavy beam — same fire rate as default but bigger and stronger
+        projectiles.push(G.Entities.createProjectile(vault.x, vault.y, aimAngle, speed, 'STRONG_PASSWORD'));
         playSound('shoot');
         break;
 
@@ -686,15 +684,7 @@
 
     // Fire
     fireCooldown -= dt;
-    var weapon = getActiveWeapon();
-    if (weapon === 'STRONG_PASSWORD') {
-      // Continuous stream only while holding mouse/space
-      G.Input.consumeFire(); // consume any pending fire to prevent double-shot
-      if (G.Input.isFireHeld() && fireCooldown <= 0) {
-        fireWeapon(G.Input.getAimAngle());
-        fireCooldown = 0.06; // very fast stream (~16 shots/sec)
-      }
-    } else if (G.Input.consumeFire() && fireCooldown <= 0) {
+    if (G.Input.consumeFire() && fireCooldown <= 0) {
       fireWeapon(G.Input.getAimAngle());
       fireCooldown = cfg.fireRate;
     }
