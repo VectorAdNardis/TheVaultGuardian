@@ -209,6 +209,58 @@ html, body {
   color: var(--hud-text);
 }
 
+/* ---- Bottom-Center: IT Dashboard ---- */
+#hud-bottom-center {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: all;
+  z-index: 1;
+}
+
+/* ---- IT Dashboard Button ---- */
+.dashboard-btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 2px solid;
+  cursor: pointer;
+  pointer-events: all;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.dashboard-btn.available {
+  color: #FFEAA7;
+  border-color: #FFEAA7;
+  background: rgba(255, 234, 167, 0.1);
+}
+
+.dashboard-btn.available:hover {
+  background: rgba(255, 234, 167, 0.25);
+  box-shadow: 0 0 16px rgba(255, 234, 167, 0.3);
+  transform: scale(1.03);
+}
+
+.dashboard-btn.active {
+  color: #88DDFF;
+  border-color: #88DDFF;
+  background: rgba(136, 221, 255, 0.15);
+  animation: pulse-cta 1s ease-in-out infinite;
+}
+
+.dashboard-btn.used {
+  color: var(--hud-dim);
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: default;
+  opacity: 0.5;
+}
+
 /* ---- Left Side: Weapon Bar (vertical, always visible) ---- */
 #hud-bottom-left {
   position: absolute;
@@ -483,10 +535,11 @@ html, body {
   z-index: 30;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   pointer-events: all;
   cursor: pointer;
+  padding: 12vh 0 15vh;
 }
 
 #attract-screen.hidden {
@@ -500,7 +553,6 @@ html, body {
   text-transform: uppercase;
   letter-spacing: 6px;
   text-shadow: 0 0 30px var(--brand-glow), 0 0 60px var(--brand-glow);
-  margin-bottom: 8px;
   text-align: center;
 }
 

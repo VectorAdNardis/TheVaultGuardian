@@ -10,6 +10,7 @@
   var els = {};
   var visible = false;
   var _onInventoryUse = null; // callback(type)
+  var _onDashboardUse = null; // callback()
 
   function init() {
     els.hud = document.getElementById('hud');
@@ -21,6 +22,20 @@
     els.inventory = document.getElementById('hud-inventory');
     els.activePowerups = document.getElementById('hud-active-powerups');
     els.killTracker = document.getElementById('hud-kill-tracker');
+    els.dashboardBtn = document.getElementById('hud-dashboard-btn');
+
+    // Dashboard button click
+    if (els.dashboardBtn) {
+      els.dashboardBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (_onDashboardUse) _onDashboardUse();
+      });
+      els.dashboardBtn.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_onDashboardUse) _onDashboardUse();
+      });
+    }
 
     // Event delegation for weapon bar clicks (survives innerHTML rebuilds)
     if (els.inventory) {
@@ -60,6 +75,10 @@
     _onInventoryUse = fn;
   }
 
+  function onDashboardUse(fn) {
+    _onDashboardUse = fn;
+  }
+
   /* Main HUD update — called every frame during gameplay.
      rt = { timeLeft, waveIndex, totalWaves, waveName,
             integrity, maxIntegrity, score,
@@ -97,8 +116,19 @@
     // Active power-ups (running with timers)
     _updateActivePowerups(rt.activePowerups);
 
-    // Kill tracker by enemy type
-    _updateKillTracker(rt.killsByType, rt.enemyCfg);
+    // IT Dashboard button state
+    if (els.dashboardBtn) {
+      if (rt.dashboardActive) {
+        els.dashboardBtn.className = 'dashboard-btn active';
+        els.dashboardBtn.textContent = '\u{1F4CA} SCANNING... ' + Math.ceil(rt.dashboardTimer) + 's';
+      } else if (rt.dashboardAvailable) {
+        els.dashboardBtn.className = 'dashboard-btn available';
+        els.dashboardBtn.textContent = '\u{1F4CA} IT DASHBOARD [5]';
+      } else {
+        els.dashboardBtn.className = 'dashboard-btn used';
+        els.dashboardBtn.textContent = '\u{1F4CA} USED THIS WAVE';
+      }
+    }
   }
 
   /* ---- Weapon bar (always visible, all 5 types) ---- */
@@ -187,6 +217,7 @@
     show: show,
     hide: hide,
     update: update,
-    onInventoryUse: onInventoryUse
+    onInventoryUse: onInventoryUse,
+    onDashboardUse: onDashboardUse
   };
 })();

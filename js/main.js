@@ -23,8 +23,14 @@
   var shownPopups = {};      // { 'STRONG_PASSWORD': true, ... } — show-once per session
   var weaponsUsed = {};      // tracks which weapon types were collected during game
 
-  // Fixed display order for weapon bar (maps to keys 1-5)
-  var POWERUP_ORDER = ['STRONG_PASSWORD', 'SSO', 'MFA', 'PASSWORD_MANAGER', 'IT_ADMIN_DASHBOARD'];
+  // Fixed display order for weapon bar (maps to keys 1-4; IT Dashboard is separate)
+  var POWERUP_ORDER = ['STRONG_PASSWORD', 'SSO', 'MFA', 'PASSWORD_MANAGER'];
+
+  // IT Dashboard state — once per wave ability
+  var dashboardActive = false;
+  var dashboardTimer = 0;
+  var dashboardUsedThisWave = false;
+  var dashboardDuration = 5; // seconds
 
   var gameTime = 0;       // total elapsed game time (seconds)
   var timeLeft = 0;       // countdown (seconds)
@@ -143,6 +149,7 @@
       G.Input.init(canvas);
       G.HUD.init();
       G.HUD.onInventoryUse(_useInventoryItem);
+      G.HUD.onDashboardUse(_activateDashboard);
       G.Leaderboard.init();
       G.Leaderboard.initClearControl();
       G.Leaderboard.onRestart(function () {
@@ -213,23 +220,34 @@
       });
     }
 
-    // Popup dismiss on click/tap
-    var popupEl = document.getElementById('powerup-popup');
-    if (popupEl) {
-      popupEl.addEventListener('click', function () {
+    // Popup dismiss ONLY via Continue button
+    var popupContinueBtn = document.querySelector('#powerup-popup .popup-continue');
+    if (popupContinueBtn) {
+      popupContinueBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
         _dismissPopup();
       });
-      popupEl.addEventListener('touchstart', function (e) {
+      popupContinueBtn.addEventListener('touchstart', function (e) {
         e.preventDefault();
+        e.stopPropagation();
         _dismissPopup();
+      });
+    }
+    // Block clicks on the popup backdrop from doing anything
+    var popupEl = document.getElementById('powerup-popup');
+    if (popupEl) {
+      popupEl.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+      popupEl.addEventListener('touchstart', function (e) {
+        e.stopPropagation();
       });
     }
 
     // Keyboard start + inventory shortcuts
     window.addEventListener('keydown', function (e) {
-      // Dismiss popup on any key
+      // Block all keyboard input while popup is showing
       if (popupActive) {
-        _dismissPopup();
         return;
       }
       if (e.code === 'Space' || e.code === 'Enter') {
@@ -237,11 +255,14 @@
           startGame();
         }
       }
-      // Number keys 1-5 to use inventory items (mapped to POWERUP_ORDER)
+      // Number keys 1-4 to use inventory items, 5 or D for IT Dashboard
       if (G.State.is(G.State.STATES.PLAYING)) {
         var keyNum = parseInt(e.key, 10);
-        if (keyNum >= 1 && keyNum <= 5 && POWERUP_ORDER[keyNum - 1]) {
+        if (keyNum >= 1 && keyNum <= 4 && POWERUP_ORDER[keyNum - 1]) {
           _useInventoryItem(POWERUP_ORDER[keyNum - 1]);
+        }
+        if (e.key === '5' || e.code === 'KeyD') {
+          _activateDashboard();
         }
         // Debug shortcuts: W = instant win, L = instant loss
         if (e.code === 'KeyW' && e.shiftKey) {
@@ -275,6 +296,10 @@
     activePowerups = [];
     inventory = {};
     weaponsUsed = {};
+    dashboardActive = false;
+    dashboardTimer = 0;
+    dashboardUsedThisWave = false;
+    dashboardDuration = (cfg.powerups.IT_ADMIN_DASHBOARD && cfg.powerups.IT_ADMIN_DASHBOARD.durationSeconds) || 5;
 
     gameTime = 0;
     timeLeft = cfg.durationSeconds;
@@ -494,12 +519,32 @@
     return best ? best.type : 'DEFAULT';
   }
 
-  /* Check if IT Admin Dashboard is active (slow effect) */
+  /* Check if IT Admin Dashboard is active (freeze effect) */
   function hasAdminDashboard() {
-    for (var i = 0; i < activePowerups.length; i++) {
-      if (activePowerups[i].type === 'IT_ADMIN_DASHBOARD') return true;
+    return dashboardActive;
+  }
+
+  /* Activate IT Dashboard — once per wave */
+  function _activateDashboard() {
+    if (dashboardUsedThisWave || dashboardActive) return;
+    if (!G.State.is(G.State.STATES.PLAYING)) return;
+    if (popupActive) return;
+    dashboardActive = true;
+    dashboardTimer = dashboardDuration;
+    dashboardUsedThisWave = true;
+    weaponsUsed['IT_ADMIN_DASHBOARD'] = true;
+    playSound('pickup');
+
+    // Show educational popup on first use
+    if (!shownPopups['IT_ADMIN_DASHBOARD']) {
+      shownPopups['IT_ADMIN_DASHBOARD'] = true;
+      var def = cfg.powerups['IT_ADMIN_DASHBOARD'];
+      if (def) {
+        _showPowerupPopup({ type: 'IT_ADMIN_DASHBOARD', chipColor: def.chipColor });
+      }
     }
-    return false;
+
+    if (isDemo) console.log('[DEMO] IT Dashboard activated');
   }
 
   /* Fire weapon from vault */
@@ -666,7 +711,19 @@
     }
     if (spawnResult.waveJustStarted) {
       playSound('wave_start');
+      dashboardUsedThisWave = false; // reset dashboard for new wave
       if (isDemo) console.log('[DEMO] Wave', spawnResult.waveIndex + 1, 'started');
+    }
+
+    // ---- IT Dashboard timer ----
+    if (dashboardActive) {
+      dashboardTimer -= dt;
+      if (dashboardTimer <= 0) {
+        dashboardActive = false;
+        dashboardTimer = 0;
+        playSound('expire');
+        if (isDemo) console.log('[DEMO] IT Dashboard expired');
+      }
     }
 
     // ---- IT Admin freeze effect ----
@@ -867,7 +924,11 @@
       killsByType: G.Scoring.getKillsByType(),
       enemyCfg: cfg.enemies,
       powerupCfg: cfg.powerups,
-      powerupOrder: POWERUP_ORDER
+      powerupOrder: POWERUP_ORDER,
+      dashboardAvailable: !dashboardUsedThisWave && !dashboardActive,
+      dashboardActive: dashboardActive,
+      dashboardTimer: dashboardTimer,
+      dashboardDuration: dashboardDuration
     });
   }
 
@@ -972,14 +1033,8 @@
     G.Renderer.drawBackground(gameTime, reducedMotion);
 
     // IT Admin overlay effect
-    if (hasAdminDashboard()) {
-      var adminPu = null;
-      for (var a = 0; a < activePowerups.length; a++) {
-        if (activePowerups[a].type === 'IT_ADMIN_DASHBOARD') adminPu = activePowerups[a];
-      }
-      if (adminPu) {
-        G.Renderer.drawAdminOverlay(gameTime, adminPu.remaining / adminPu.duration);
-      }
+    if (dashboardActive) {
+      G.Renderer.drawAdminOverlay(gameTime, dashboardTimer / dashboardDuration);
     }
 
     // Wave rings (behind everything)
@@ -992,10 +1047,15 @@
       G.Renderer.drawLaser(lasers[l], vault, gameTime);
     }
 
-    // Threats
+    // Threats (with labels when dashboard active)
     for (var t = 0; t < threats.length; t++) {
       if (threats[t].alive) {
         G.Renderer.drawThreat(threats[t], scale, gameTime, colorBlindMode);
+        if (dashboardActive) {
+          var enemyDef = cfg.enemies[threats[t].type];
+          var label = enemyDef ? (enemyDef.category || enemyDef.label) : threats[t].type;
+          G.Renderer.drawThreatLabel(threats[t], scale, label);
+        }
       }
     }
 

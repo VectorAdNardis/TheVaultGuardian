@@ -318,84 +318,154 @@
   }
 
   /* ---- Vault Core ---- */
+  /* ---- Pixel-art Digital Fortress ---- */
+
+  // 16x16 fortress sprite — front-facing castle/tower structure
+  // Legend: 0=empty, 1=dark wall, 2=mid wall, 3=light wall/highlight,
+  //         4=window/circuit glow, 5=door/gate, 6=battlement top
+  var FORTRESS_SPRITE = [
+    [0,0,0,6,6,0,0,0,0,0,6,6,0,0,0,0],
+    [0,0,0,6,6,0,6,6,6,0,6,6,0,0,0,0],
+    [0,6,6,1,1,6,6,1,6,6,1,1,6,6,0,0],
+    [0,6,6,1,1,1,1,1,1,1,1,1,6,6,0,0],
+    [0,1,1,1,4,1,1,3,1,1,4,1,1,1,0,0],
+    [0,1,1,1,4,1,1,3,1,1,4,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [0,1,2,1,4,1,2,2,2,1,4,1,2,1,0,0],
+    [0,1,2,1,4,1,2,3,2,1,4,1,2,1,0,0],
+    [0,1,2,1,1,1,2,3,2,1,1,1,2,1,0,0],
+    [0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+    [1,1,1,1,4,1,1,5,1,1,4,1,1,1,1,0],
+    [1,2,1,1,4,1,1,5,1,1,4,1,1,2,1,0],
+    [1,2,1,1,1,1,1,5,1,1,1,1,1,2,1,0],
+    [1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,0],
+    [1,1,1,1,1,1,5,5,5,1,1,1,1,1,1,0]
+  ];
+
   function drawVault(vault, time, scale) {
     var x = vault.x;
     var y = vault.y;
     var r = vault.radius * scale;
+    var intPct = Math.max(0, vault.integrity / vault.maxIntegrity);
 
-    // Outer glow rings
-    var pulseA = 0.15 + 0.1 * Math.sin(time * 3);
-    var pulseR = r * (1.8 + 0.15 * Math.sin(time * 2));
+    // Outer glow — pulses with integrity
+    var pulseA = 0.12 + 0.08 * Math.sin(time * 3);
+    var glowR = r * (2.2 + 0.15 * Math.sin(time * 2));
+    var glowColor = intPct > 0.5 ? '78, 205, 196' : intPct > 0.25 ? '243, 156, 18' : '255, 23, 68';
 
     ctx.beginPath();
-    ctx.arc(x, y, pulseR, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255, 23, 68, ' + (pulseA * 0.3).toFixed(3) + ')';
+    ctx.arc(x, y, glowR, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(' + glowColor + ', ' + (pulseA * 0.2).toFixed(3) + ')';
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(x, y, r * 1.4, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255, 23, 68, ' + pulseA.toFixed(3) + ')';
+    ctx.arc(x, y, r * 1.7, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(' + glowColor + ', ' + (pulseA * 0.35).toFixed(3) + ')';
     ctx.fill();
 
-    // Shield ring
-    ctx.beginPath();
-    ctx.arc(x, y, r * 1.15, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(255, 23, 68, 0.5)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Rotating dashes on shield
+    // Rotating shield segments
     ctx.save();
     ctx.translate(x, y);
-    ctx.rotate(time * 0.5);
-    var dashCount = 12;
-    for (var i = 0; i < dashCount; i++) {
-      var angle = (Math.PI * 2 / dashCount) * i;
-      var dashR = r * 1.15;
+    ctx.rotate(time * 0.3);
+    var segCount = 8;
+    for (var s = 0; s < segCount; s++) {
+      var sAngle = (Math.PI * 2 / segCount) * s;
       ctx.beginPath();
-      ctx.arc(0, 0, dashR, angle, angle + 0.15);
-      ctx.strokeStyle = 'rgba(255, 100, 100, 0.4)';
-      ctx.lineWidth = 3;
+      ctx.arc(0, 0, r * 1.5, sAngle, sAngle + 0.25);
+      ctx.strokeStyle = 'rgba(' + glowColor + ', ' + (0.35 + 0.15 * Math.sin(time * 4 + s)).toFixed(2) + ')';
+      ctx.lineWidth = 2;
       ctx.stroke();
     }
     ctx.restore();
 
-    // Core circle
-    var grad = ctx.createRadialGradient(x, y, 0, x, y, r);
-    grad.addColorStop(0, '#FF4444');
-    grad.addColorStop(0.6, '#D32F2F');
-    grad.addColorStop(1, '#8B0000');
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = grad;
-    ctx.fill();
+    // Draw pixel-art fortress (scaled up 2.8x beyond hitbox for visibility)
+    var sprite = FORTRESS_SPRITE;
+    var rows = sprite.length;
+    var cols = sprite[0].length;
+    var pixSize = Math.floor(r * 2.2 / Math.max(rows, cols));
+    if (pixSize < 3) pixSize = 3;
+    var totalW = cols * pixSize;
+    var totalH = rows * pixSize;
+    var startX = x - totalW / 2;
+    var startY = y - totalH / 2;
 
-    // Inner highlight
-    ctx.beginPath();
-    ctx.arc(x - r * 0.2, y - r * 0.2, r * 0.35, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.fill();
+    // Circuit glow animation phase
+    var circuitPulse = 0.5 + 0.5 * Math.sin(time * 4);
 
-    // Lock icon in center
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold ' + Math.round(r * 0.7) + 'px monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('\u{1F512}', x, y);
+    for (var row = 0; row < rows; row++) {
+      for (var col = 0; col < cols; col++) {
+        var val = sprite[row][col];
+        if (val === 0) continue;
+
+        var px = startX + col * pixSize;
+        var py = startY + row * pixSize;
+        var color;
+
+        switch (val) {
+          case 1: // Dark wall
+            color = intPct > 0.25 ? '#3B4A6B' : '#6B2A2A';
+            break;
+          case 2: // Mid wall
+            color = intPct > 0.25 ? '#4A5F8C' : '#8B3535';
+            break;
+          case 3: // Highlight
+            color = intPct > 0.25 ? '#6B82B0' : '#A54545';
+            break;
+          case 4: // Circuit glow (animated)
+            var cA = (0.7 + 0.3 * circuitPulse);
+            if (intPct > 0.5) {
+              color = 'rgba(78, 255, 230, ' + cA.toFixed(2) + ')';
+            } else if (intPct > 0.25) {
+              color = 'rgba(255, 200, 50, ' + cA.toFixed(2) + ')';
+            } else {
+              color = 'rgba(255, 80, 80, ' + cA.toFixed(2) + ')';
+            }
+            break;
+          case 5: // Door/gate
+            color = '#0F1520';
+            break;
+          case 6: // Battlements
+            color = intPct > 0.25 ? '#2A5090' : '#8B2020';
+            break;
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(px, py, pixSize, pixSize);
+
+        // Pixel border for definition
+        if (val !== 4 && val !== 5) {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = 0.5;
+          ctx.strokeRect(px, py, pixSize, pixSize);
+        }
+      }
+    }
+
+    // Circuit trace lines (decorative — radiate from windows)
+    ctx.strokeStyle = 'rgba(' + glowColor + ', ' + (0.15 + 0.1 * circuitPulse).toFixed(2) + ')';
+    ctx.lineWidth = 1;
+    var traceLen = r * 0.4;
+    var traceAngles = [-0.8, -0.4, 0.4, 0.8];
+    for (var t = 0; t < traceAngles.length; t++) {
+      var ta = traceAngles[t] + Math.sin(time * 0.5) * 0.05;
+      ctx.beginPath();
+      ctx.moveTo(x + Math.cos(ta) * r * 0.5, y + Math.sin(ta) * r * 0.5);
+      ctx.lineTo(x + Math.cos(ta) * (r * 0.5 + traceLen), y + Math.sin(ta) * (r * 0.5 + traceLen));
+      ctx.stroke();
+    }
 
     // Shield flash (on damage)
     if (vault.shieldFlash > 0) {
       ctx.beginPath();
-      ctx.arc(x, y, r * 1.5, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255, 50, 50, ' + (vault.shieldFlash * 0.6).toFixed(2) + ')';
+      ctx.arc(x, y, r * 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 50, 50, ' + (vault.shieldFlash * 0.5).toFixed(2) + ')';
       ctx.fill();
     }
 
     // Integrity ring
-    var intPct = Math.max(0, vault.integrity / vault.maxIntegrity);
     if (intPct < 1) {
       ctx.beginPath();
-      ctx.arc(x, y, r * 1.3, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * intPct);
+      ctx.arc(x, y, r * 1.55, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * intPct);
       var intColor = intPct > 0.5 ? '#4ECDC4' : intPct > 0.25 ? '#F39C12' : '#E74C3C';
       ctx.strokeStyle = intColor;
       ctx.lineWidth = 3;
@@ -506,6 +576,43 @@
       ctx.stroke();
       ctx.setLineDash([]);
     }
+  }
+
+  /* Draw threat label (shown during IT Dashboard freeze) */
+  function drawThreatLabel(thr, scale, label) {
+    var x = thr.x;
+    var y = thr.y;
+    var r = thr.radius * scale;
+
+    ctx.save();
+    ctx.font = 'bold ' + Math.max(10, Math.round(r * 0.55)) + 'px ' + "'Courier New', monospace";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    var textWidth = ctx.measureText(label).width;
+    var padX = 6;
+    var padY = 3;
+    var boxX = x - textWidth / 2 - padX;
+    var boxY = y + r + 6;
+
+    // Background pill
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+    ctx.beginPath();
+    ctx.roundRect(boxX, boxY, textWidth + padX * 2, 16 + padY * 2, 4);
+    ctx.fill();
+
+    // Border matching threat color
+    ctx.strokeStyle = thr.color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(boxX, boxY, textWidth + padX * 2, 16 + padY * 2, 4);
+    ctx.stroke();
+
+    // Label text
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(label, x, boxY + padY);
+
+    ctx.restore();
   }
 
   function _cbColor(type) {
@@ -824,6 +931,7 @@
     drawBackground: drawBackground,
     drawVault: drawVault,
     drawThreat: drawThreat,
+    drawThreatLabel: drawThreatLabel,
     drawPickup: drawPickup,
     drawProjectile: drawProjectile,
     drawLaser: drawLaser,

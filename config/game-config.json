@@ -6,30 +6,30 @@
     {
       "name": "Wave 1",
       "duration": 30,
-      "spawnInterval": 3.5,
+      "spawnInterval": 2.0,
       "enemies": ["WEAK_PASSWORD"],
-      "speedMultiplier": 0.45
+      "speedMultiplier": 0.7
     },
     {
       "name": "Wave 2",
       "duration": 30,
-      "spawnInterval": 2.8,
+      "spawnInterval": 1.6,
       "enemies": ["WEAK_PASSWORD", "SHADOW_IT_APP"],
-      "speedMultiplier": 0.55
+      "speedMultiplier": 0.75
     },
     {
       "name": "Wave 3",
       "duration": 30,
-      "spawnInterval": 2.2,
+      "spawnInterval": 1.4,
       "enemies": ["SHADOW_IT_APP", "SHADOW_AI_BOT", "WEAK_PASSWORD"],
-      "speedMultiplier": 0.7
+      "speedMultiplier": 0.85
     },
     {
       "name": "Wave 4",
       "duration": 30,
-      "spawnInterval": 1.6,
+      "spawnInterval": 1.2,
       "enemies": ["SHADOW_IT_APP", "SHADOW_AI_BOT", "WEAK_PASSWORD", "PHISHING"],
-      "speedMultiplier": 0.85
+      "speedMultiplier": 0.95
     },
     {
       "name": "Wave 5",
