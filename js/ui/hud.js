@@ -107,14 +107,17 @@
     }
     els.integrityLabel.textContent = Math.ceil(rt.integrity);
 
-    // Score
-    els.score.textContent = rt.score;
+    // Score (only if element exists)
+    if (els.score) els.score.textContent = rt.score;
 
     // Weapon bar (always shows all 5 weapons, greyed if count=0)
     _updateWeaponBar(rt.inventory, rt.powerupCfg, rt.powerupOrder);
 
     // Active power-ups (running with timers)
     _updateActivePowerups(rt.activePowerups);
+
+    // Kill tracker by enemy type
+    _updateKillTracker(rt.killsByType, rt.enemyCfg);
 
     // IT Dashboard button state
     if (els.dashboardBtn) {
