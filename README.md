@@ -30,7 +30,8 @@ Combined with MFA, SSO, and SaaS monitoring, organizations can build a defense-i
 - **Shoot**: Click, tap, or press Space to fire
 - **Keyboard aim**: WASD or arrow keys to rotate aim direction
 - **Power-ups**: Shoot the floating chip pickups to collect weapons
-- **Activate**: Press 1–5 or click the weapon bar to equip
+- **Activate**: Press 1–4 or click the weapon bar to equip
+- **IT Dashboard**: Press 5 or D, or click the bottom-center button — freezes all enemies and reveals their labels (once per wave)
 - **Goal**: Survive 5 waves (2.5 minutes) and protect the fort's integrity
 
 ## Weapons & Power-Ups
@@ -39,11 +40,11 @@ Each weapon maps to a real security capability. Stronger weapons deal more damag
 
 | Key | Weapon | Effect | Damage | Real-World Defense |
 |-----|--------|--------|--------|--------------------|
-| 1 | **Strong Password** | Hold-to-fire twin beams | 2x | Unique, complex passwords as first line of defense |
+| 1 | **Strong Password** | Heavy single beam (green) | 2x | Unique, complex passwords as first line of defense |
 | 2 | **SSO** | Persistent laser beam | 3x | One secure login for all apps, reducing attack surface |
 | 3 | **Multi-Factor Auth** | Shotgun cone burst (7 beams) | 4x | Blocks 99.9% of automated attacks, even with stolen passwords |
 | 4 | **Password Manager** | Expanding ring shockwave | 5x | Eliminates password reuse, the #1 cause of breaches |
-| 5 | **IT Dashboard** | Slows all enemies 35% | — | Track password habits, measure health score, enforce policies, reveal Shadow IT |
+| 5/D | **IT Dashboard** | Freezes all enemies + reveals labels | — | Once per wave. Track password habits, reveal Shadow IT, enforce policies |
 
 Without a power-up, you fire a single beam at 1x damage.
 
@@ -75,8 +76,8 @@ Threats escalate across 5 waves, introducing tougher enemies as the game progres
 ## Leaderboard
 
 - Top 10 scores stored in `localStorage`
-- "Today" and "All-Time" tabs
-- Players enter 3-letter initials (auto-saves as "GST" after 5s idle)
+- "Session", "Today", and "All-Time" tabs (Session is in-memory only, default)
+- Players enter 3-letter alphanumeric initials (auto-saves as "GST" after 5s idle)
 - Kill breakdown by enemy type shown alongside scores
 - Data persists across browser sessions on the same machine
 
@@ -142,6 +143,9 @@ TheVaultGuardian/
 - **Scales** from 1920x1080 to 4K; uses `devicePixelRatio` (capped at 2x)
 - **Audio**: WebAudio API synthesized tones — no external sound files
 - **Kiosk safety**: 20s idle auto-resets to attract mode; 15s summary auto-resets
+- **Onboarding**: 5-second tutorial overlay on first play per session, dismissible on any input
+- **Post-game debrief**: Shows which weapons the player used/missed, rank-specific message, and CTA
+- **Pixel-art rocket ship**: Replaces the vault sphere; colours shift from blue to red as integrity drops
 
 ## Credits
 
